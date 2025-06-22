@@ -5,6 +5,7 @@ import { useState } from "react";
 import AddReviewDialog, { Content, NewReviewData, Review } from "@/components/AddReviewDialog";
 import Fab from "@/components/Fab";
 import UserProfile from "@/components/UserProfile";
+import EmptyState from "@/components/EmptyState";
 
 // This is the shape of a review that has been saved
 // Note: The `Review` type is now imported from AddReviewDialog
@@ -107,6 +108,14 @@ export default function Home() {
       return 0;
     });
 
+  const getEmptyStateMessage = () => {
+    if (filter === 'all' && reviews.length === 0) {
+      return "You haven't added any reviews yet. Click the '+' to get started!";
+    }
+    const typeName = filter === 'tv-show' ? 'TV shows' : `${filter}s`;
+    return `No ${typeName} found in your reviews.`;
+  };
+
   // Exclude already reviewed content from the dialog dropdown
   const availableContentToReview = contentDatabase.filter(
     content => !reviews.some(review => review.id === content.id)
@@ -148,18 +157,22 @@ export default function Home() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
-        {filteredAndSortedReviews.map((review) => (
-          <ReviewCard
-            key={review.id}
-            title={review.title}
-            description={review.description}
-            rating={review.rating}
-            type={review.type}
-            personalNotes={review.personalNotes}
-            thumbnailUrl={review.thumbnailUrl}
-            onEdit={() => handleOpenEditDialog(review)}
-          />
-        ))}
+        {filteredAndSortedReviews.length > 0 ? (
+          filteredAndSortedReviews.map((review) => (
+            <ReviewCard
+              key={review.id}
+              title={review.title}
+              description={review.description}
+              rating={review.rating}
+              type={review.type}
+              personalNotes={review.personalNotes}
+              thumbnailUrl={review.thumbnailUrl}
+              onEdit={() => handleOpenEditDialog(review)}
+            />
+          ))
+        ) : (
+          <EmptyState message={getEmptyStateMessage()} />
+        )}
       </div>
       
       <Fab onClick={handleOpenAddDialog} />
