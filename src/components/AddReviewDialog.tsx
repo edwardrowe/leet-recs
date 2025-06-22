@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 // This is the shape of the content in our "database"
@@ -17,43 +17,62 @@ export type NewReviewData = {
   personalNotes: string;
 };
 
+// The full review shape, needed for edit mode
+export type Review = Content & {
+  rating: number;
+  personalNotes?: string;
+};
+
 type AddReviewDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: NewReviewData) => void;
-  contentDatabase: Content[];
+  contentDatabase: Content[]; // For add mode
+  reviewToEdit?: Review | null; // For edit mode
 };
 
-const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSave, contentDatabase }) => {
+const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSave, contentDatabase, reviewToEdit }) => {
+  const isEditMode = !!reviewToEdit;
   const [selectedContentId, setSelectedContentId] = useState<string>('');
   const [rating, setRating] = useState<number>(5);
   const [personalNotes, setPersonalNotes] = useState('');
 
+  useEffect(() => {
+    if (isOpen) {
+      if (isEditMode && reviewToEdit) {
+        setSelectedContentId(reviewToEdit.id);
+        setRating(reviewToEdit.rating);
+        setPersonalNotes(reviewToEdit.personalNotes || '');
+      } else {
+        setSelectedContentId('');
+        setRating(5);
+        setPersonalNotes('');
+      }
+    }
+  }, [isOpen, isEditMode, reviewToEdit]);
+
   const handleSave = () => {
-    if (!selectedContentId) {
+    const contentId = isEditMode ? reviewToEdit.id : selectedContentId;
+    if (!contentId) {
       alert('Please select an item to review.');
       return;
     }
     onSave({
-      contentId: selectedContentId,
+      contentId,
       rating: Number(rating),
       personalNotes,
     });
-    // Reset form and close
-    setSelectedContentId('');
-    setRating(5);
-    setPersonalNotes('');
     onClose();
   };
 
   if (!isOpen) return null;
 
-  const selectedContent = contentDatabase.find(c => c.id === selectedContentId);
+  const selectedContent = isEditMode ? reviewToEdit : contentDatabase.find(c => c.id === selectedContentId);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Add a new review</h2>
+        <h2 className="text-2xl font-bold mb-4">{isEditMode ? 'Edit Review' : 'Add a new review'}</h2>
         
         {selectedContent && selectedContent.thumbnailUrl && (
           <div className="relative h-48 w-full mb-4 rounded-lg overflow-hidden">
@@ -67,22 +86,29 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
         )}
 
         <div className="space-y-4">
-          <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content Title</label>
-            <select
-              id="content"
-              value={selectedContentId}
-              onChange={(e) => setSelectedContentId(e.target.value)}
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-white dark:bg-gray-700"
-            >
-              <option value="" disabled>Select something to review...</option>
-              {contentDatabase.map(item => (
-                <option key={item.id} value={item.id}>
-                  {item.title} ({item.type})
-                </option>
-              ))}
-            </select>
-          </div>
+          {isEditMode && reviewToEdit ? (
+            <div>
+              <h3 className="text-xl font-semibold">{reviewToEdit.title}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{reviewToEdit.type}</p>
+            </div>
+          ) : (
+            <div>
+              <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content Title</label>
+              <select
+                id="content"
+                value={selectedContentId}
+                onChange={(e) => setSelectedContentId(e.target.value)}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-white dark:bg-gray-700"
+              >
+                <option value="" disabled>Select something to review...</option>
+                {contentDatabase.map(item => (
+                  <option key={item.id} value={item.id}>
+                    {item.title} ({item.type})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div>
             <label htmlFor="rating" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Rating (0-10)</label>
             <input

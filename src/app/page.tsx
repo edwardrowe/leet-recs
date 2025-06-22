@@ -2,20 +2,13 @@
 
 import ReviewCard from "@/components/ReviewCard";
 import { useState } from "react";
-import AddReviewDialog, { Content, NewReviewData } from "@/components/AddReviewDialog";
+import AddReviewDialog, { Content, NewReviewData, Review } from "@/components/AddReviewDialog";
 import Fab from "@/components/Fab";
 import UserProfile from "@/components/UserProfile";
 
 // This is the shape of a review that has been saved
-type Review = {
-  id: string;
-  title: string;
-  description: string;
-  rating: number;
-  type: 'movie' | 'tv-show' | 'book';
-  personalNotes?: string;
-  thumbnailUrl?: string;
-};
+// Note: The `Review` type is now imported from AddReviewDialog
+// to ensure it's consistent across components.
 
 // This is our fake "database" of all possible content
 const contentDatabase: Content[] = [
@@ -54,10 +47,26 @@ export default function Home() {
   const [sortBy, setSortBy] = useState<'rating' | 'title'>('rating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [reviewToEdit, setReviewToEdit] = useState<Review | null>(null);
 
   const currentUser = {
     name: 'Elrowe',
     avatarUrl: 'https://picsum.photos/seed/elrowe-avatar/200',
+  };
+
+  const handleOpenAddDialog = () => {
+    setReviewToEdit(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleOpenEditDialog = (review: Review) => {
+    setReviewToEdit(review);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setReviewToEdit(null);
   };
 
   const handleSaveReview = (newReviewData: NewReviewData) => {
@@ -148,17 +157,19 @@ export default function Home() {
             type={review.type}
             personalNotes={review.personalNotes}
             thumbnailUrl={review.thumbnailUrl}
+            onEdit={() => handleOpenEditDialog(review)}
           />
         ))}
       </div>
       
-      <Fab onClick={() => setIsDialogOpen(true)} />
+      <Fab onClick={handleOpenAddDialog} />
 
       <AddReviewDialog
         isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
+        onClose={handleCloseDialog}
         onSave={handleSaveReview}
         contentDatabase={availableContentToReview}
+        reviewToEdit={reviewToEdit}
       />
     </main>
   );
