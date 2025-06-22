@@ -4,6 +4,7 @@ import ReviewCard from "@/components/ReviewCard";
 import { useState } from "react";
 import AddReviewDialog, { Content, NewReviewData } from "@/components/AddReviewDialog";
 import Fab from "@/components/Fab";
+import UserProfile from "@/components/UserProfile";
 
 // This is the shape of a review that has been saved
 type Review = {
@@ -54,6 +55,11 @@ export default function Home() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const currentUser = {
+    name: 'Elrowe',
+    avatarUrl: 'https://picsum.photos/seed/elrowe-avatar/200',
+  };
+
   const handleSaveReview = (newReviewData: NewReviewData) => {
     const content = contentDatabase.find(c => c.id === newReviewData.contentId);
     if (!content) return;
@@ -98,10 +104,13 @@ export default function Home() {
   );
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-12">
-      <h1 className="text-5xl font-bold mb-8">leet-recs</h1>
+    <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
+      <header className="w-full max-w-6xl flex justify-between items-center">
+        <h1 className="text-5xl font-bold">My Recs</h1>
+        <UserProfile name={currentUser.name} avatarUrl={currentUser.avatarUrl} />
+      </header>
 
-      <div className="w-full max-w-4xl mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div className="w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex gap-2 flex-wrap justify-center">
           <button onClick={() => setFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>All</button>
           <button onClick={() => setFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'movie' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Movies</button>
