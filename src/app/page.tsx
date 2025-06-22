@@ -11,17 +11,18 @@ type Review = {
   rating: number;
   type: 'movie' | 'tv-show' | 'book';
   personalNotes?: string;
+  thumbnailUrl?: string;
 };
 
 export default function Home() {
   const dummyReviews: Review[] = [
     {
-      id: "1",
-      title: "Inception",
-      description: "A mind-bending thriller about dreaming within dreams.",
+      id: "3",
+      title: "Project Hail Mary",
+      description: "A lone astronaut must save the Earth from a mysterious threat.",
       rating: 9,
-      type: "movie" as const,
-      personalNotes: "Had to watch it twice to really get it. The ending is brilliant.",
+      type: "book" as const,
+      thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300",
     },
     {
       id: "2",
@@ -30,13 +31,7 @@ export default function Home() {
       rating: 10,
       type: "tv-show" as const,
       personalNotes: "The 'hot priest' season is a masterpiece of television.",
-    },
-    {
-      id: "3",
-      title: "Project Hail Mary",
-      description: "A lone astronaut must save the Earth from a mysterious threat.",
-      rating: 9,
-      type: "book" as const,
+      thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300",
     },
     {
       id: "4",
@@ -44,21 +39,37 @@ export default function Home() {
       description: "A mockumentary about the everyday lives of office employees.",
       rating: 8,
       type: "tv-show" as const,
-      personalNotes: "The first season is a bit rough, but it gets so much better."
-    }
+      personalNotes: "The first season is a bit rough, but it gets so much better.",
+      thumbnailUrl: "https://picsum.photos/seed/the-office/400/300",
+    },
+    {
+      id: "1",
+      title: "Inception",
+      description: "A mind-bending thriller about dreaming within dreams.",
+      rating: 9,
+      type: "movie" as const,
+      personalNotes: "Had to watch it twice to really get it. The ending is brilliant.",
+      thumbnailUrl: "https://picsum.photos/seed/inception/400/300",
+    },
   ];
 
   const [filter, setFilter] = useState<'all' | 'movie' | 'tv-show' | 'book'>('all');
   const [sortBy, setSortBy] = useState<'rating' | 'title'>('rating');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   const filteredAndSortedReviews = dummyReviews
     .filter(review => filter === 'all' || review.type === filter)
     .sort((a, b) => {
+      const direction = sortDirection === 'asc' ? 1 : -1;
       if (sortBy === 'rating') {
-        return b.rating - a.rating;
+        // Also sort by title as a secondary criterion for items with the same rating
+        if (b.rating === a.rating) {
+          return a.title.localeCompare(b.title) * direction;
+        }
+        return (b.rating - a.rating) * direction;
       }
       if (sortBy === 'title') {
-        return a.title.localeCompare(b.title);
+        return a.title.localeCompare(b.title) * direction;
       }
       return 0;
     });
@@ -86,6 +97,13 @@ export default function Home() {
             <option value="rating">Rating</option>
             <option value="title">Title</option>
           </select>
+          <button 
+            onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
+            className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+            aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
+          >
+            {sortDirection === 'asc' ? '↑' : '↓'}
+          </button>
         </div>
       </div>
 
@@ -98,6 +116,7 @@ export default function Home() {
             rating={review.rating}
             type={review.type}
             personalNotes={review.personalNotes}
+            thumbnailUrl={review.thumbnailUrl}
           />
         ))}
       </div>
