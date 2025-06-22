@@ -27,11 +27,12 @@ type AddReviewDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: NewReviewData) => void;
+  onDelete?: () => void;
   contentDatabase: Content[]; // For add mode
   reviewToEdit?: Review | null; // For edit mode
 };
 
-const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSave, contentDatabase, reviewToEdit }) => {
+const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSave, onDelete, contentDatabase, reviewToEdit }) => {
   const isEditMode = !!reviewToEdit;
   const [selectedContentId, setSelectedContentId] = useState<string>('');
   const [rating, setRating] = useState<number>(5);
@@ -134,13 +135,22 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
             />
           </div>
         </div>
-        <div className="mt-6 flex justify-end gap-4">
-          <button onClick={onClose} className="px-4 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500">
-            Cancel
-          </button>
-          <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-            Save Review
-          </button>
+        <div className="mt-6 flex justify-between items-center">
+          <div>
+            {isEditMode && onDelete && (
+              <button onClick={onDelete} className="px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                Delete Review
+              </button>
+            )}
+          </div>
+          <div className="flex gap-4">
+            <button onClick={onClose} className="px-4 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500">
+              Cancel
+            </button>
+            <button onClick={handleSave} className="px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+              Save Review
+            </button>
+          </div>
         </div>
       </div>
     </div>

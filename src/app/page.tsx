@@ -6,6 +6,7 @@ import AddReviewDialog, { Content, NewReviewData, Review } from "@/components/Ad
 import Fab from "@/components/Fab";
 import UserProfile from "@/components/UserProfile";
 import EmptyState from "@/components/EmptyState";
+import ConfirmationDialog from "@/components/ConfirmationDialog";
 
 // This is the shape of a review that has been saved
 // Note: The `Review` type is now imported from AddReviewDialog
@@ -49,6 +50,8 @@ export default function Home() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [reviewToEdit, setReviewToEdit] = useState<Review | null>(null);
+  const [isConfirmDeleteDialogOpen, setIsConfirmDeleteDialogOpen] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState<Review | null>(null);
 
   const currentUser = {
     name: 'Elrowe',
@@ -68,6 +71,22 @@ export default function Home() {
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
     setReviewToEdit(null);
+  };
+
+  const handleOpenDeleteConfirmDialog = () => {
+    if (reviewToEdit) {
+      setReviewToDelete(reviewToEdit);
+      setIsDialogOpen(false);
+      setIsConfirmDeleteDialogOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    if (reviewToDelete) {
+      setReviews(prevReviews => prevReviews.filter(r => r.id !== reviewToDelete.id));
+      setIsConfirmDeleteDialogOpen(false);
+      setReviewToDelete(null);
+    }
   };
 
   const handleSaveReview = (newReviewData: NewReviewData) => {
@@ -183,6 +202,15 @@ export default function Home() {
         onSave={handleSaveReview}
         contentDatabase={availableContentToReview}
         reviewToEdit={reviewToEdit}
+        onDelete={handleOpenDeleteConfirmDialog}
+      />
+
+      <ConfirmationDialog
+        isOpen={isConfirmDeleteDialogOpen}
+        onClose={() => setIsConfirmDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message={`Are you sure you want to delete your review for "${reviewToDelete?.title}"? This action cannot be undone.`}
       />
     </main>
   );
