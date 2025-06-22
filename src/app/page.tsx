@@ -2,8 +2,10 @@
 
 import ReviewCard from "@/components/ReviewCard";
 import { useState } from "react";
+import AddReviewDialog, { Content, NewReviewData } from "@/components/AddReviewDialog";
+import Fab from "@/components/Fab";
 
-// Define the type here to be used by the component state
+// This is the shape of a review that has been saved
 type Review = {
   id: string;
   title: string;
@@ -14,55 +16,71 @@ type Review = {
   thumbnailUrl?: string;
 };
 
-export default function Home() {
-  const dummyReviews: Review[] = [
-    {
-      id: "3",
-      title: "Project Hail Mary",
-      description: "A lone astronaut must save the Earth from a mysterious threat.",
-      rating: 9,
-      type: "book" as const,
-      thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300",
-    },
-    {
-      id: "2",
-      title: "Fleabag",
-      description: "A hilarious and heartbreaking look at a young woman's life in London.",
-      rating: 10,
-      type: "tv-show" as const,
-      personalNotes: "The 'hot priest' season is a masterpiece of television.",
-      thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300",
-    },
-    {
-      id: "4",
-      title: "The Office",
-      description: "A mockumentary about the everyday lives of office employees.",
-      rating: 8,
-      type: "tv-show" as const,
-      personalNotes: "The first season is a bit rough, but it gets so much better.",
-      thumbnailUrl: "https://picsum.photos/seed/the-office/400/300",
-    },
-    {
-      id: "1",
-      title: "Inception",
-      description: "A mind-bending thriller about dreaming within dreams.",
-      rating: 9,
-      type: "movie" as const,
-      personalNotes: "Had to watch it twice to really get it. The ending is brilliant.",
-      thumbnailUrl: "https://picsum.photos/seed/inception/400/300",
-    },
-  ];
+// This is our fake "database" of all possible content
+const contentDatabase: Content[] = [
+  { id: "1", title: "Inception", type: "movie", description: "A mind-bending thriller about dreaming within dreams.", thumbnailUrl: "https://picsum.photos/seed/inception/400/300" },
+  { id: "2", title: "Fleabag", type: "tv-show", description: "A hilarious and heartbreaking look at a young woman's life in London.", thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300" },
+  { id: "3", title: "Project Hail Mary", type: "book", description: "A lone astronaut must save the Earth from a mysterious threat.", thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300" },
+  { id: "4", title: "The Office", type: "tv-show", description: "A mockumentary about the everyday lives of office employees.", thumbnailUrl: "https://picsum.photos/seed/the-office/400/300" },
+  { id: "5", title: "Dune", type: "book", description: "A sci-fi epic about a young nobleman's destiny on a desert planet.", thumbnailUrl: "https://picsum.photos/seed/dune/400/300" },
+  { id: "6", title: "The Matrix", type: "movie", description: "A hacker discovers the shocking truth about his reality.", thumbnailUrl: "https://picsum.photos/seed/the-matrix/400/300" },
+];
 
+// This is the initial set of reviews already on the page
+const initialReviews: Review[] = [
+  {
+    id: "3",
+    title: "Project Hail Mary",
+    description: "A lone astronaut must save the Earth from a mysterious threat.",
+    rating: 9,
+    type: "book" as const,
+    thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300",
+  },
+  {
+    id: "2",
+    title: "Fleabag",
+    description: "A hilarious and heartbreaking look at a young woman's life in London.",
+    rating: 10,
+    type: "tv-show" as const,
+    personalNotes: "The 'hot priest' season is a masterpiece of television.",
+    thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300",
+  },
+];
+
+export default function Home() {
+  const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [filter, setFilter] = useState<'all' | 'movie' | 'tv-show' | 'book'>('all');
   const [sortBy, setSortBy] = useState<'rating' | 'title'>('rating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const filteredAndSortedReviews = dummyReviews
+  const handleSaveReview = (newReviewData: NewReviewData) => {
+    const content = contentDatabase.find(c => c.id === newReviewData.contentId);
+    if (!content) return;
+
+    const newReview: Review = {
+      ...content,
+      rating: newReviewData.rating,
+      personalNotes: newReviewData.personalNotes,
+    };
+    
+    // Add the new review, replacing it if it already exists
+    setReviews(prevReviews => {
+      const existingIndex = prevReviews.findIndex(r => r.id === newReview.id);
+      if (existingIndex > -1) {
+        const updatedReviews = [...prevReviews];
+        updatedReviews[existingIndex] = newReview;
+        return updatedReviews;
+      }
+      return [...prevReviews, newReview];
+    });
+  };
+
+  const filteredAndSortedReviews = reviews
     .filter(review => filter === 'all' || review.type === filter)
     .sort((a, b) => {
       const direction = sortDirection === 'asc' ? 1 : -1;
       if (sortBy === 'rating') {
-        // Also sort by title as a secondary criterion for items with the same rating
         if (b.rating === a.rating) {
           return a.title.localeCompare(b.title) * direction;
         }
@@ -74,6 +92,10 @@ export default function Home() {
       return 0;
     });
 
+  // Exclude already reviewed content from the dialog dropdown
+  const availableContentToReview = contentDatabase.filter(
+    content => !reviews.some(review => review.id === content.id)
+  );
 
   return (
     <main className="flex min-h-screen flex-col items-center p-12">
@@ -120,6 +142,15 @@ export default function Home() {
           />
         ))}
       </div>
+      
+      <Fab onClick={() => setIsDialogOpen(true)} />
+
+      <AddReviewDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onSave={handleSaveReview}
+        contentDatabase={availableContentToReview}
+      />
     </main>
   );
 }

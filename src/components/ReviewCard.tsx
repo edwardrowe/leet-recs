@@ -18,8 +18,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ title, description, rating, typ
           <Image
             src={thumbnailUrl}
             alt={`Thumbnail for ${title}`}
-            layout="fill"
-            objectFit="cover"
+            fill
+            className="object-cover"
           />
         </div>
       )}
