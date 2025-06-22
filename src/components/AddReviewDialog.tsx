@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 // This is the shape of the content in our "database"
 export type Content = {
@@ -47,10 +48,24 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
 
   if (!isOpen) return null;
 
+  const selectedContent = contentDatabase.find(c => c.id === selectedContentId);
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Add a new review</h2>
+        
+        {selectedContent && selectedContent.thumbnailUrl && (
+          <div className="relative h-48 w-full mb-4 rounded-lg overflow-hidden">
+            <Image
+              src={selectedContent.thumbnailUrl}
+              alt={`Thumbnail for ${selectedContent.title}`}
+              fill
+              className="object-cover"
+            />
+          </div>
+        )}
+
         <div className="space-y-4">
           <div>
             <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content Title</label>
