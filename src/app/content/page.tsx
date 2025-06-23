@@ -57,18 +57,16 @@ export default function ContentPage() {
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
       <NavBar />
       <h1 className="text-4xl font-bold mb-8">All Content</h1>
-      <div className="w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-        <ContentFilterBar
-          typeFilter={typeFilter}
-          setTypeFilter={setTypeFilter}
-          search={search}
-          setSearch={setSearch}
-          sortDirection={sortDirection}
-          setSortDirection={setSortDirection}
-          color="cyan"
-          className="flex-1"
-        />
-        <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4 mt-4 sm:mt-0">
+      <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
+        <div className="flex flex-row items-center gap-2">
+          {/* Content type filter */}
+          <button onClick={() => setTypeFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'all' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>All</button>
+          <button onClick={() => setTypeFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'movie' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Movies</button>
+          <button onClick={() => setTypeFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'tv-show' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>TV Shows</button>
+          <button onClick={() => setTypeFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'book' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Books</button>
+          {/* Vertical divider */}
+          <span className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
+          {/* Show filter */}
           <label className="font-medium">Show:</label>
           <button
             className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'all' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
@@ -87,6 +85,22 @@ export default function ContentPage() {
             onClick={() => handleReviewedFilterChange('not-reviewed')}
           >
             Not Reviewed
+          </button>
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+          />
+          <button
+            onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
+            className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+            aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
+          >
+            {sortDirection === 'asc' ? '↑' : '↓'}
           </button>
         </div>
       </div>

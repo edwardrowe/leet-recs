@@ -149,25 +149,40 @@ export default function Home() {
         <UserProfile name={currentUser.name} avatarUrl={currentUser.avatarUrl} />
       </header>
 
-      <ContentFilterBar
-        typeFilter={filter}
-        setTypeFilter={setFilter}
-        search={search}
-        setSearch={setSearch}
-        sortDirection={sortDirection}
-        setSortDirection={setSortDirection}
-      />
-      <div className="w-full max-w-4xl flex flex-row justify-end items-center gap-4 mb-2">
-        <label htmlFor="sort" className="text-sm font-medium">Sort by:</label>
-        <select
-          id="sort"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as 'rating' | 'title')}
-          className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-        >
-          <option value="rating">Rating</option>
-          <option value="title">Title</option>
-        </select>
+      <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
+        <div className="flex flex-row items-center gap-2">
+          {/* Content type filter */}
+          <button onClick={() => setFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>All</button>
+          <button onClick={() => setFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'movie' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Movies</button>
+          <button onClick={() => setFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'tv-show' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>TV Shows</button>
+          <button onClick={() => setFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'book' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Books</button>
+        </div>
+        <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+          />
+          <label htmlFor="sort" className="text-sm font-medium">Sort by:</label>
+          <select
+            id="sort"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'rating' | 'title')}
+            className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+          >
+            <option value="rating">Rating</option>
+            <option value="title">Title</option>
+          </select>
+          <button
+            onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
+            className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+            aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
+          >
+            {sortDirection === 'asc' ? '↑' : '↓'}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
