@@ -11,6 +11,8 @@ import NavBar from "@/components/NavBar";
 import { getContentList } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import { getReviews, addOrUpdateReview, deleteReview } from "@/lib/reviewStore";
+import { FaFilm, FaTv, FaBook } from "react-icons/fa";
+import Image from "next/image";
 
 // This is the shape of a review that has been saved
 // Note: The `Review` type is now imported from AddReviewDialog
@@ -47,6 +49,30 @@ import { getReviews, addOrUpdateReview, deleteReview } from "@/lib/reviewStore";
 //   },
 // ];
 
+function ReviewRow({ review, onEdit }: { review: Review; onEdit: () => void }) {
+  let icon;
+  if (review.type === "movie") icon = <FaFilm className="text-2xl text-pink-600" />;
+  else if (review.type === "tv-show") icon = <FaTv className="text-2xl text-pink-600" />;
+  else icon = <FaBook className="text-2xl text-pink-600" />;
+  return (
+    <div className="flex items-center border-b border-gray-200 dark:border-gray-700 py-4 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={onEdit}>
+      {review.thumbnailUrl && (
+        <div className="relative w-10 h-10 rounded-lg overflow-hidden mr-4 flex-shrink-0">
+          <Image src={review.thumbnailUrl} alt={review.title} fill className="object-cover" />
+        </div>
+      )}
+      <div className="mr-4 flex-shrink-0">{icon}</div>
+      <div className="flex-1">
+        <div className="font-semibold text-lg">{review.title}</div>
+        {review.personalNotes && <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">{review.personalNotes}</div>}
+      </div>
+      <div className="text-right min-w-[48px]">
+        <span className="inline-block bg-pink-600 text-white rounded-full px-3 py-1 font-bold text-lg">{review.rating}</span>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [reviews, setReviews] = useState<Review[]>(getReviews());
   const [filter, setFilter] = useState<'all' | 'movie' | 'tv-show' | 'book'>('all');
@@ -57,6 +83,7 @@ export default function Home() {
   const [reviewToEdit, setReviewToEdit] = useState<Review | null>(null);
   const [isConfirmDeleteDialogOpen, setIsConfirmDeleteDialogOpen] = useState(false);
   const [reviewToDelete, setReviewToDelete] = useState<Review | null>(null);
+  const [view, setView] = useState<'grid' | 'row'>('grid');
 
   const currentUser = {
     name: 'Elrowe',
@@ -182,27 +209,54 @@ export default function Home() {
           >
             {sortDirection === 'asc' ? '↑' : '↓'}
           </button>
+          {/* View toggle */}
+          <button
+            className={`ml-4 px-3 py-2 rounded-md text-sm font-medium border ${view === 'grid' ? 'bg-pink-600 text-white border-pink-600' : 'bg-white dark:bg-gray-800 text-pink-600 border-pink-600'}`}
+            onClick={() => setView('grid')}
+            aria-label="Grid view"
+          >
+            Grid
+          </button>
+          <button
+            className={`px-3 py-2 rounded-md text-sm font-medium border ${view === 'row' ? 'bg-pink-600 text-white border-pink-600' : 'bg-white dark:bg-gray-800 text-pink-600 border-pink-600'}`}
+            onClick={() => setView('row')}
+            aria-label="Row view"
+          >
+            List
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
-        {filteredAndSortedReviews.length > 0 ? (
-          filteredAndSortedReviews.map((review) => (
-            <ReviewCard
-              key={review.id}
-              title={review.title}
-              description={review.description}
-              rating={review.rating}
-              type={review.type}
-              personalNotes={review.personalNotes}
-              thumbnailUrl={review.thumbnailUrl}
-              onEdit={() => handleOpenEditDialog(review)}
-            />
-          ))
-        ) : (
-          <EmptyState message={getEmptyStateMessage()} />
-        )}
-      </div>
+      {view === 'grid' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
+          {filteredAndSortedReviews.length > 0 ? (
+            filteredAndSortedReviews.map((review) => (
+              <ReviewCard
+                key={review.id}
+                title={review.title}
+                description={review.description}
+                rating={review.rating}
+                type={review.type}
+                personalNotes={review.personalNotes}
+                thumbnailUrl={review.thumbnailUrl}
+                onEdit={() => handleOpenEditDialog(review)}
+              />
+            ))
+          ) : (
+            <EmptyState message={getEmptyStateMessage()} />
+          )}
+        </div>
+      ) : (
+        <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
+          {filteredAndSortedReviews.length > 0 ? (
+            filteredAndSortedReviews.map((review) => (
+              <ReviewRow key={review.id} review={review} onEdit={() => handleOpenEditDialog(review)} />
+            ))
+          ) : (
+            <EmptyState message={getEmptyStateMessage()} />
+          )}
+        </div>
+      )}
       
       <Fab onClick={handleOpenAddDialog} />
 
