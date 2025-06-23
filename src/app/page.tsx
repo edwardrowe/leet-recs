@@ -8,20 +8,21 @@ import UserProfile from "@/components/UserProfile";
 import EmptyState from "@/components/EmptyState";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import NavBar from "@/components/NavBar";
+import { getContentList } from "@/lib/contentStore";
 
 // This is the shape of a review that has been saved
 // Note: The `Review` type is now imported from AddReviewDialog
 // to ensure it's consistent across components.
 
 // This is our fake "database" of all possible content
-const contentDatabase: Content[] = [
-  { id: "1", title: "Inception", type: "movie", description: "A mind-bending thriller about dreaming within dreams.", thumbnailUrl: "https://picsum.photos/seed/inception/400/300" },
-  { id: "2", title: "Fleabag", type: "tv-show", description: "A hilarious and heartbreaking look at a young woman's life in London.", thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300" },
-  { id: "3", title: "Project Hail Mary", type: "book", description: "A lone astronaut must save the Earth from a mysterious threat.", thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300" },
-  { id: "4", title: "The Office", type: "tv-show", description: "A mockumentary about the everyday lives of office employees.", thumbnailUrl: "https://picsum.photos/seed/the-office/400/300" },
-  { id: "5", title: "Dune", type: "book", description: "A sci-fi epic about a young nobleman's destiny on a desert planet.", thumbnailUrl: "https://picsum.photos/seed/dune/400/300" },
-  { id: "6", title: "The Matrix", type: "movie", description: "A hacker discovers the shocking truth about his reality.", thumbnailUrl: "https://picsum.photos/seed/the-matrix/400/300" },
-];
+// const contentDatabase: Content[] = [
+//   { id: "1", title: "Inception", type: "movie", description: "A mind-bending thriller about dreaming within dreams.", thumbnailUrl: "https://picsum.photos/seed/inception/400/300" },
+//   { id: "2", title: "Fleabag", type: "tv-show", description: "A hilarious and heartbreaking look at a young woman's life in London.", thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300" },
+//   { id: "3", title: "Project Hail Mary", type: "book", description: "A lone astronaut must save the Earth from a mysterious threat.", thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300" },
+//   { id: "4", title: "The Office", type: "tv-show", description: "A mockumentary about the everyday lives of office employees.", thumbnailUrl: "https://picsum.photos/seed/the-office/400/300" },
+//   { id: "5", title: "Dune", type: "book", description: "A sci-fi epic about a young nobleman's destiny on a desert planet.", thumbnailUrl: "https://picsum.photos/seed/dune/400/300" },
+//   { id: "6", title: "The Matrix", type: "movie", description: "A hacker discovers the shocking truth about his reality.", thumbnailUrl: "https://picsum.photos/seed/the-matrix/400/300" },
+// ];
 
 // This is the initial set of reviews already on the page
 const initialReviews: Review[] = [
@@ -91,7 +92,7 @@ export default function Home() {
   };
 
   const handleSaveReview = (newReviewData: NewReviewData) => {
-    const content = contentDatabase.find(c => c.id === newReviewData.contentId);
+    const content = getContentList().find(c => c.id === newReviewData.contentId);
     if (!content) return;
 
     const newReview: Review = {
@@ -137,7 +138,7 @@ export default function Home() {
   };
 
   // Exclude already reviewed content from the dialog dropdown
-  const availableContentToReview = contentDatabase.filter(
+  const availableContentToReview = getContentList().filter(
     content => !reviews.some(review => review.id === content.id)
   );
 
