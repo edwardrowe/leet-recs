@@ -7,6 +7,7 @@ import Fab from "@/components/Fab";
 import UserProfile from "@/components/UserProfile";
 import EmptyState from "@/components/EmptyState";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
+import NavBar from "@/components/NavBar";
 
 // This is the shape of a review that has been saved
 // Note: The `Review` type is now imported from AddReviewDialog
@@ -142,6 +143,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
+      <NavBar />
       <header className="w-full max-w-6xl flex justify-between items-center">
         <h1 className="text-5xl font-bold">My Recs</h1>
         <UserProfile name={currentUser.name} avatarUrl={currentUser.avatarUrl} />
