@@ -19,7 +19,7 @@ export default function ContentPage() {
       title: data.title,
       description: data.description,
       thumbnailUrl: data.thumbnailUrl,
-      type: 'movie' as const, // Could add a type selector in the dialog later
+      type: data.type,
     };
     addContent(newContent);
     setContentList(getContentList()); // Trigger re-render
