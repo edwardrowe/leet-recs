@@ -8,7 +8,7 @@ import Fab from "@/components/Fab";
 import { getContentList, addContent } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import AddReviewDialog, { Content as ReviewContent, NewReviewData } from "@/components/AddReviewDialog";
-import { getReviews } from "@/lib/reviewStore";
+import { getReviews, addOrUpdateReview } from "@/lib/reviewStore";
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
@@ -20,6 +20,7 @@ export default function ContentPage() {
   const [reviewContent, setReviewContent] = useState<ReviewContent | null>(null);
   const [reviewedFilter, setReviewedFilter] = useState<'all' | 'reviewed' | 'not-reviewed'>('all');
   const reviewedIds = new Set(getReviews().map(r => r.id));
+  const [_, setForceUpdate] = useState(0);
 
   const handleAddContent = (data: NewContentData) => {
     // For now, default to 'movie' type and generate a new id
@@ -52,6 +53,18 @@ export default function ContentPage() {
     });
 
   const handleReviewedFilterChange = (val: 'all' | 'reviewed' | 'not-reviewed') => setReviewedFilter(val);
+
+  const handleSaveReview = (data: NewReviewData) => {
+    if (!reviewContent) return;
+    const newReview = {
+      ...reviewContent,
+      rating: data.rating,
+      personalNotes: data.personalNotes,
+    };
+    addOrUpdateReview(newReview);
+    setForceUpdate(x => x + 1); // force re-render
+    setReviewDialogOpen(false);
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
@@ -146,7 +159,7 @@ export default function ContentPage() {
       <AddReviewDialog
         isOpen={reviewDialogOpen}
         onClose={() => setReviewDialogOpen(false)}
-        onSave={() => setReviewDialogOpen(false)}
+        onSave={handleSaveReview}
         contentDatabase={reviewContent ? [reviewContent] : []}
         reviewToEdit={null}
       />
