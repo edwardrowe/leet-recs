@@ -10,6 +10,7 @@ import ConfirmationDialog from "@/components/ConfirmationDialog";
 import NavBar from "@/components/NavBar";
 import { getContentList } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
+import { getReviews, addOrUpdateReview, deleteReview } from "@/lib/reviewStore";
 
 // This is the shape of a review that has been saved
 // Note: The `Review` type is now imported from AddReviewDialog
@@ -26,28 +27,28 @@ import ContentFilterBar from "@/components/ContentFilterBar";
 // ];
 
 // This is the initial set of reviews already on the page
-const initialReviews: Review[] = [
-  {
-    id: "3",
-    title: "Project Hail Mary",
-    description: "A lone astronaut must save the Earth from a mysterious threat.",
-    rating: 9,
-    type: "book" as const,
-    thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300",
-  },
-  {
-    id: "2",
-    title: "Fleabag",
-    description: "A hilarious and heartbreaking look at a young woman's life in London.",
-    rating: 10,
-    type: "tv-show" as const,
-    personalNotes: "The 'hot priest' season is a masterpiece of television.",
-    thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300",
-  },
-];
+// const initialReviews: Review[] = [
+//   {
+//     id: "3",
+//     title: "Project Hail Mary",
+//     description: "A lone astronaut must save the Earth from a mysterious threat.",
+//     rating: 9,
+//     type: "book" as const,
+//     thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300",
+//   },
+//   {
+//     id: "2",
+//     title: "Fleabag",
+//     description: "A hilarious and heartbreaking look at a young woman's life in London.",
+//     rating: 10,
+//     type: "tv-show" as const,
+//     personalNotes: "The 'hot priest' season is a masterpiece of television.",
+//     thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300",
+//   },
+// ];
 
 export default function Home() {
-  const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [reviews, setReviews] = useState<Review[]>(getReviews());
   const [filter, setFilter] = useState<'all' | 'movie' | 'tv-show' | 'book'>('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'title'>('rating');
@@ -87,7 +88,8 @@ export default function Home() {
 
   const handleConfirmDelete = () => {
     if (reviewToDelete) {
-      setReviews(prevReviews => prevReviews.filter(r => r.id !== reviewToDelete.id));
+      deleteReview(reviewToDelete.id);
+      setReviews(getReviews());
       setIsConfirmDeleteDialogOpen(false);
       setReviewToDelete(null);
     }
@@ -102,17 +104,8 @@ export default function Home() {
       rating: newReviewData.rating,
       personalNotes: newReviewData.personalNotes,
     };
-    
-    // Add the new review, replacing it if it already exists
-    setReviews(prevReviews => {
-      const existingIndex = prevReviews.findIndex(r => r.id === newReview.id);
-      if (existingIndex > -1) {
-        const updatedReviews = [...prevReviews];
-        updatedReviews[existingIndex] = newReview;
-        return updatedReviews;
-      }
-      return [...prevReviews, newReview];
-    });
+    addOrUpdateReview(newReview);
+    setReviews(getReviews());
   };
 
   const filteredAndSortedReviews = reviews

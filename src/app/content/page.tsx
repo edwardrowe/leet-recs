@@ -8,6 +8,7 @@ import Fab from "@/components/Fab";
 import { getContentList, addContent } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import AddReviewDialog, { Content as ReviewContent, NewReviewData } from "@/components/AddReviewDialog";
+import { getReviews } from "@/lib/reviewStore";
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
@@ -17,6 +18,8 @@ export default function ContentPage() {
   const [search, setSearch] = useState('');
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewContent, setReviewContent] = useState<ReviewContent | null>(null);
+  const [reviewedFilter, setReviewedFilter] = useState<'all' | 'reviewed' | 'not-reviewed'>('all');
+  const reviewedIds = new Set(getReviews().map(r => r.id));
 
   const handleAddContent = (data: NewContentData) => {
     // For now, default to 'movie' type and generate a new id
@@ -34,29 +37,59 @@ export default function ContentPage() {
 
   // Filtering and sorting logic
   const filteredSortedContent = contentList
-    .filter(item =>
-      (typeFilter === 'all' || item.type === typeFilter) &&
-      (item.title.toLowerCase().includes(search.toLowerCase()) ||
-        item.description.toLowerCase().includes(search.toLowerCase()))
-    )
+    .filter(item => {
+      if (reviewedFilter === 'reviewed' && !reviewedIds.has(item.id)) return false;
+      if (reviewedFilter === 'not-reviewed' && reviewedIds.has(item.id)) return false;
+      return (
+        (typeFilter === 'all' || item.type === typeFilter) &&
+        (item.title.toLowerCase().includes(search.toLowerCase()) ||
+          item.description.toLowerCase().includes(search.toLowerCase()))
+      );
+    })
     .sort((a, b) => {
       const cmp = a.title.localeCompare(b.title);
       return sortDirection === 'asc' ? cmp : -cmp;
     });
 
+  const handleReviewedFilterChange = (val: 'all' | 'reviewed' | 'not-reviewed') => setReviewedFilter(val);
+
   return (
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
       <NavBar />
       <h1 className="text-4xl font-bold mb-8">All Content</h1>
-      <ContentFilterBar
-        typeFilter={typeFilter}
-        setTypeFilter={setTypeFilter}
-        search={search}
-        setSearch={setSearch}
-        sortDirection={sortDirection}
-        setSortDirection={setSortDirection}
-        color="cyan"
-      />
+      <div className="w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+        <ContentFilterBar
+          typeFilter={typeFilter}
+          setTypeFilter={setTypeFilter}
+          search={search}
+          setSearch={setSearch}
+          sortDirection={sortDirection}
+          setSortDirection={setSortDirection}
+          color="cyan"
+          className="flex-1"
+        />
+        <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4 mt-4 sm:mt-0">
+          <label className="font-medium">Show:</label>
+          <button
+            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'all' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            onClick={() => handleReviewedFilterChange('all')}
+          >
+            All
+          </button>
+          <button
+            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'reviewed' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            onClick={() => handleReviewedFilterChange('reviewed')}
+          >
+            Reviewed
+          </button>
+          <button
+            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'not-reviewed' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            onClick={() => handleReviewedFilterChange('not-reviewed')}
+          >
+            Not Reviewed
+          </button>
+        </div>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
         {filteredSortedContent.map((item) => (
           <div key={item.id} className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden">
@@ -74,15 +107,17 @@ export default function ContentPage() {
               <h2 className="text-2xl font-bold mb-1">{item.title}</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{item.type}</p>
               <p className="text-gray-700 dark:text-gray-300 mb-4">{item.description}</p>
-              <button
-                className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700"
-                onClick={() => {
-                  setReviewContent(item);
-                  setReviewDialogOpen(true);
-                }}
-              >
-                Add to My Recs
-              </button>
+              {!reviewedIds.has(item.id) && (
+                <button
+                  className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700"
+                  onClick={() => {
+                    setReviewContent(item);
+                    setReviewDialogOpen(true);
+                  }}
+                >
+                  Add to My Recs
+                </button>
+              )}
             </div>
           </div>
         ))}
