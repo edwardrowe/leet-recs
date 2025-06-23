@@ -52,6 +52,7 @@ export default function ContentPage() {
         setSearch={setSearch}
         sortDirection={sortDirection}
         setSortDirection={setSortDirection}
+        color="cyan"
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
         {filteredSortedContent.map((item) => (
@@ -70,16 +71,17 @@ export default function ContentPage() {
               <h2 className="text-2xl font-bold mb-1">{item.title}</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{item.type}</p>
               <p className="text-gray-700 dark:text-gray-300 mb-4">{item.description}</p>
-              <button className="mt-auto px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700">Add to My Recs</button>
+              <button className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700">Add to My Recs</button>
             </div>
           </div>
         ))}
       </div>
-      <Fab onClick={() => setIsDialogOpen(true)} />
+      <Fab onClick={() => setIsDialogOpen(true)} color="cyan" />
       <AddContentDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onSave={handleAddContent}
+        color="cyan"
       />
     </main>
   );

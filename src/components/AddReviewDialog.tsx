@@ -73,7 +73,7 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
       <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-md relative">
-        <div className="h-2 rounded-t-2xl bg-blue-600 w-full" />
+        <div className="h-2 rounded-t-2xl bg-pink-600 w-full" />
         <div className="p-8">
           <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{isEditMode ? 'Edit Review' : 'Add a new review'}</h2>
           {selectedContent && selectedContent.thumbnailUrl && (
@@ -99,7 +99,7 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
                   id="content"
                   value={selectedContentId}
                   onChange={(e) => setSelectedContentId(e.target.value)}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg bg-white dark:bg-gray-700 px-3"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-lg bg-white dark:bg-gray-700 px-3"
                 >
                   <option value="" disabled>Select something to review...</option>
                   {contentDatabase.map(item => (
@@ -131,7 +131,7 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
                 rows={4}
                 value={personalNotes}
                 onChange={(e) => setPersonalNotes(e.target.value)}
-                className="mt-1 block w-full shadow-sm sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full shadow-sm sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
           </div>
@@ -147,7 +147,7 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
               <button onClick={onClose} className="px-5 py-2 text-sm font-medium rounded-lg text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 shadow">
                 Cancel
               </button>
-              <button onClick={handleSave} className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow">
+              <button onClick={handleSave} className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-pink-600 hover:bg-pink-700 shadow">
                 Save Review
               </button>
             </div>
