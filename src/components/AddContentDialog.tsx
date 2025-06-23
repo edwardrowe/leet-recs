@@ -98,6 +98,17 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
               >
                 Upload
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const randomSeed = Math.random().toString(36).substring(2, 10);
+                  setThumbnailUrl(`https://picsum.photos/seed/${randomSeed}/400/300`);
+                  setUploadPreview(null);
+                }}
+                className="px-3 py-2 rounded-md bg-green-600 text-white font-medium hover:bg-green-700"
+              >
+                Random Image
+              </button>
             </div>
             {(uploadPreview || thumbnailUrl) && (
               <div className="relative h-32 w-full mt-2 rounded overflow-hidden border">
