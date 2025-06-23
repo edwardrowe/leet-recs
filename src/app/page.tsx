@@ -9,6 +9,7 @@ import EmptyState from "@/components/EmptyState";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import NavBar from "@/components/NavBar";
 import { getContentList } from "@/lib/contentStore";
+import ContentFilterBar from "@/components/ContentFilterBar";
 
 // This is the shape of a review that has been saved
 // Note: The `Review` type is now imported from AddReviewDialog
@@ -48,6 +49,7 @@ const initialReviews: Review[] = [
 export default function Home() {
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [filter, setFilter] = useState<'all' | 'movie' | 'tv-show' | 'book'>('all');
+  const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'title'>('rating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -114,7 +116,11 @@ export default function Home() {
   };
 
   const filteredAndSortedReviews = reviews
-    .filter(review => filter === 'all' || review.type === filter)
+    .filter(review =>
+      (filter === 'all' || review.type === filter) &&
+      (review.title.toLowerCase().includes(search.toLowerCase()) ||
+        review.description.toLowerCase().includes(search.toLowerCase()))
+    )
     .sort((a, b) => {
       const direction = sortDirection === 'asc' ? 1 : -1;
       if (sortBy === 'rating') {
@@ -150,32 +156,25 @@ export default function Home() {
         <UserProfile name={currentUser.name} avatarUrl={currentUser.avatarUrl} />
       </header>
 
-      <div className="w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="flex gap-2 flex-wrap justify-center">
-          <button onClick={() => setFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>All</button>
-          <button onClick={() => setFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'movie' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Movies</button>
-          <button onClick={() => setFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'tv-show' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>TV Shows</button>
-          <button onClick={() => setFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'book' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Books</button>
-        </div>
-        <div className="flex items-center gap-2">
-          <label htmlFor="sort" className="text-sm font-medium">Sort by:</label>
-          <select
-            id="sort"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'rating' | 'title')}
-            className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-          >
-            <option value="rating">Rating</option>
-            <option value="title">Title</option>
-          </select>
-          <button 
-            onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
-            className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-            aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
-          >
-            {sortDirection === 'asc' ? '↑' : '↓'}
-          </button>
-        </div>
+      <ContentFilterBar
+        typeFilter={filter}
+        setTypeFilter={setFilter}
+        search={search}
+        setSearch={setSearch}
+        sortDirection={sortDirection}
+        setSortDirection={setSortDirection}
+      />
+      <div className="w-full max-w-4xl flex flex-row justify-end items-center gap-4 mb-2">
+        <label htmlFor="sort" className="text-sm font-medium">Sort by:</label>
+        <select
+          id="sort"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as 'rating' | 'title')}
+          className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+        >
+          <option value="rating">Rating</option>
+          <option value="title">Title</option>
+        </select>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">

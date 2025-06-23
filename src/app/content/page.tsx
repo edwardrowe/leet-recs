@@ -6,6 +6,7 @@ import NavBar from "@/components/NavBar";
 import Image from "next/image";
 import Fab from "@/components/Fab";
 import { getContentList, addContent } from "@/lib/contentStore";
+import ContentFilterBar from "@/components/ContentFilterBar";
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
@@ -44,30 +45,14 @@ export default function ContentPage() {
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
       <NavBar />
       <h1 className="text-4xl font-bold mb-8">All Content</h1>
-      <div className="w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-        <div className="flex gap-2 flex-wrap justify-center">
-          <button onClick={() => setTypeFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>All</button>
-          <button onClick={() => setTypeFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'movie' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Movies</button>
-          <button onClick={() => setTypeFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'tv-show' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>TV Shows</button>
-          <button onClick={() => setTypeFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'book' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Books</button>
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-          />
-          <button
-            onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
-            className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-            aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
-          >
-            {sortDirection === 'asc' ? '↑' : '↓'}
-          </button>
-        </div>
-      </div>
+      <ContentFilterBar
+        typeFilter={typeFilter}
+        setTypeFilter={setTypeFilter}
+        search={search}
+        setSearch={setSearch}
+        sortDirection={sortDirection}
+        setSortDirection={setSortDirection}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
         {filteredSortedContent.map((item) => (
           <div key={item.id} className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden">
