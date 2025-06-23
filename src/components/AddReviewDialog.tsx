@@ -44,13 +44,17 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
         setSelectedContentId(reviewToEdit.id);
         setRating(reviewToEdit.rating);
         setPersonalNotes(reviewToEdit.personalNotes || '');
+      } else if (contentDatabase.length === 1) {
+        setSelectedContentId(contentDatabase[0].id);
+        setRating(5);
+        setPersonalNotes('');
       } else {
         setSelectedContentId('');
         setRating(5);
         setPersonalNotes('');
       }
     }
-  }, [isOpen, isEditMode, reviewToEdit]);
+  }, [isOpen, isEditMode, reviewToEdit, contentDatabase]);
 
   const handleSave = () => {
     const contentId = isEditMode ? reviewToEdit.id : selectedContentId;
@@ -92,6 +96,11 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
                 <h3 className="text-xl font-semibold">{reviewToEdit.title}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{reviewToEdit.type}</p>
               </div>
+            ) : contentDatabase.length === 1 ? (
+              <div>
+                <h3 className="text-xl font-semibold">{contentDatabase[0].title}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{contentDatabase[0].type}</p>
+              </div>
             ) : (
               <div>
                 <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Content Title</label>
@@ -99,7 +108,7 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
                   id="content"
                   value={selectedContentId}
                   onChange={(e) => setSelectedContentId(e.target.value)}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-lg bg-white dark:bg-gray-700 px-3"
+                  className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-lg bg-white dark:bg-gray-700 px-3`}
                 >
                   <option value="" disabled>Select something to review...</option>
                   {contentDatabase.map(item => (

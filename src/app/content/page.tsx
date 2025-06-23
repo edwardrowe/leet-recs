@@ -7,6 +7,7 @@ import Image from "next/image";
 import Fab from "@/components/Fab";
 import { getContentList, addContent } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
+import AddReviewDialog, { Content as ReviewContent, NewReviewData } from "@/components/AddReviewDialog";
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
@@ -14,6 +15,8 @@ export default function ContentPage() {
   const [typeFilter, setTypeFilter] = useState<'all' | 'movie' | 'tv-show' | 'book'>('all');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [search, setSearch] = useState('');
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [reviewContent, setReviewContent] = useState<ReviewContent | null>(null);
 
   const handleAddContent = (data: NewContentData) => {
     // For now, default to 'movie' type and generate a new id
@@ -71,7 +74,15 @@ export default function ContentPage() {
               <h2 className="text-2xl font-bold mb-1">{item.title}</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{item.type}</p>
               <p className="text-gray-700 dark:text-gray-300 mb-4">{item.description}</p>
-              <button className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700">Add to My Recs</button>
+              <button
+                className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700"
+                onClick={() => {
+                  setReviewContent(item);
+                  setReviewDialogOpen(true);
+                }}
+              >
+                Add to My Recs
+              </button>
             </div>
           </div>
         ))}
@@ -82,6 +93,13 @@ export default function ContentPage() {
         onClose={() => setIsDialogOpen(false)}
         onSave={handleAddContent}
         color="cyan"
+      />
+      <AddReviewDialog
+        isOpen={reviewDialogOpen}
+        onClose={() => setReviewDialogOpen(false)}
+        onSave={() => setReviewDialogOpen(false)}
+        contentDatabase={reviewContent ? [reviewContent] : []}
+        reviewToEdit={null}
       />
     </main>
   );
