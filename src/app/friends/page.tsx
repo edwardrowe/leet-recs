@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { getPeople, followPerson, unfollowPerson, Person } from "@/lib/peopleStore";
+import { getPeople, followPerson, unfollowPerson, Person, CURRENT_USER_ID } from "@/lib/peopleStore";
 import Image from "next/image";
 import NavBar from "@/components/NavBar";
 
@@ -17,7 +17,7 @@ export default function FriendsPage() {
     setPeople(getPeople());
   };
 
-  const filteredPeople = people.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+  const filteredPeople = people.filter(p => p.id !== CURRENT_USER_ID && p.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
