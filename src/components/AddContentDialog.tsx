@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
+import { Content } from '@/lib/contentStore';
 
 export type NewContentData = {
   title: string;
@@ -12,10 +13,12 @@ type AddContentDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: NewContentData) => void;
-  color?: 'magenta' | 'cyan';
+  color?: 'pink' | 'cyan';
+  contentToEdit?: Content | null;
+  onDelete?: () => void;
 };
 
-const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, onSave, color = 'magenta' }) => {
+const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, onSave, color = 'pink', contentToEdit, onDelete }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [thumbnailUrl, setThumbnailUrl] = useState('');
@@ -23,6 +26,22 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
   const [type, setType] = useState<'movie' | 'tv-show' | 'book' | 'video-game'>('movie');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const accent = color === 'cyan' ? 'cyan' : 'pink';
+
+  useEffect(() => {
+    if (isOpen && contentToEdit) {
+      setTitle(contentToEdit.title);
+      setDescription(contentToEdit.description);
+      setThumbnailUrl(contentToEdit.thumbnailUrl || '');
+      setType(contentToEdit.type);
+      setUploadPreview(contentToEdit.thumbnailUrl || null);
+    } else if (isOpen) {
+      setTitle('');
+      setDescription('');
+      setThumbnailUrl('');
+      setType('movie');
+      setUploadPreview(null);
+    }
+  }, [isOpen, contentToEdit]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,7 +81,7 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
       <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-md relative">
         <div className={`h-2 rounded-t-2xl bg-${accent}-600 w-full`} />
         <div className="p-8">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Add New Content</h2>
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{contentToEdit ? 'Edit Content' : 'Add New Content'}</h2>
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
@@ -148,8 +167,16 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
             <button onClick={onClose} className={`px-5 py-2 text-sm font-medium rounded-lg text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 shadow`}>
               Cancel
             </button>
+            {contentToEdit && onDelete && (
+              <button
+                onClick={onDelete}
+                className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 shadow mr-2"
+              >
+                Delete
+              </button>
+            )}
             <button onClick={handleSave} className={`px-5 py-2 text-sm font-medium rounded-lg text-white bg-${accent}-600 hover:bg-${accent}-700 shadow`}>
-              Save Content
+              Save
             </button>
           </div>
         </div>

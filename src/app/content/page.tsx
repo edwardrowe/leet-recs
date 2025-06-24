@@ -5,12 +5,13 @@ import AddContentDialog, { NewContentData } from "@/components/AddContentDialog"
 import NavBar from "@/components/NavBar";
 import Image from "next/image";
 import Fab from "@/components/Fab";
-import { getContentList, addContent, ContentType } from "@/lib/contentStore";
+import { getContentList, addContent, updateContent, deleteContent, ContentType } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import AddReviewDialog, { NewReviewData } from "@/components/AddReviewDialog";
 import { getReviews, addOrUpdateReview } from "@/lib/reviewStore";
 import { getPeople, CURRENT_USER_ID } from "@/lib/peopleStore";
 import { getReviewsByContentId } from "@/lib/reviewStore";
+import ConfirmationDialog from '@/components/ConfirmationDialog';
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
@@ -23,6 +24,9 @@ export default function ContentPage() {
   const [reviewedFilter, setReviewedFilter] = useState<'all' | 'reviewed' | 'not-reviewed'>('all');
   const reviewedIds = new Set(getReviews().filter(r => r.userId === CURRENT_USER_ID).map(r => r.id));
   const [_, setForceUpdate] = useState(0);
+  const [editContent, setEditContent] = useState<Content | null>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [pendingDeleteContent, setPendingDeleteContent] = useState<Content | null>(null);
 
   const handleAddContent = (data: NewContentData) => {
     // For now, default to 'movie' type and generate a new id
@@ -138,7 +142,7 @@ export default function ContentPage() {
             })
             .filter((f): f is { id: string; name: string; avatarUrl: string } => Boolean(f));
           return (
-            <div key={item.id} className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden">
+            <div key={item.id} className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden relative">
               {item.thumbnailUrl && (
                 <div className="relative h-48 w-full">
                   <Image
@@ -174,6 +178,14 @@ export default function ContentPage() {
                     Add to My Recs
                   </button>
                 )}
+                {/* Edit button */}
+                <button
+                  className="absolute top-2 right-2 px-2 py-1 text-xs rounded bg-cyan-600 text-white hover:bg-cyan-700"
+                  onClick={() => setEditContent(item)}
+                  aria-label="Edit Content"
+                >
+                  Edit
+                </button>
               </div>
             </div>
           );
@@ -192,6 +204,38 @@ export default function ContentPage() {
         onSave={handleSaveReview}
         contentDatabase={reviewContent ? [reviewContent] : []}
         reviewToEdit={null}
+      />
+      <AddContentDialog
+        isOpen={!!editContent}
+        onClose={() => setEditContent(null)}
+        onSave={data => {
+          if (!editContent) return;
+          updateContent({ ...editContent, ...data });
+          setEditContent(null);
+          setContentList(getContentList());
+        }}
+        contentToEdit={editContent}
+        onDelete={() => {
+          if (!editContent) return;
+          setPendingDeleteContent(editContent);
+          setConfirmDeleteOpen(true);
+        }}
+        color="cyan"
+      />
+      <ConfirmationDialog
+        isOpen={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        onConfirm={() => {
+          if (pendingDeleteContent) {
+            deleteContent(pendingDeleteContent.id);
+            setContentList(getContentList());
+            setEditContent(null);
+          }
+          setPendingDeleteContent(null);
+          setConfirmDeleteOpen(false);
+        }}
+        title="Delete Content"
+        message={`Are you sure you want to delete "${pendingDeleteContent?.title}"? This action cannot be undone.`}
       />
     </main>
   );

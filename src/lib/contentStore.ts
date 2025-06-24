@@ -20,6 +20,14 @@ export function addContent(newContent: Content) {
   contentList = [...contentList, newContent];
 }
 
+export function updateContent(updated: Content) {
+  contentList = contentList.map(c => c.id === updated.id ? updated : c);
+}
+
+export function deleteContent(id: string) {
+  contentList = contentList.filter(c => c.id !== id);
+}
+
 // This is the shape of the content in our "database"
 export type Content = {
   id: string;
