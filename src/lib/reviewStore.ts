@@ -102,7 +102,7 @@ export function getReviewsByUserId(userId: string) {
 }
 
 export function addOrUpdateReview(newReview: ReviewWithUser) {
-  const idx = reviews.findIndex(r => r.id === newReview.id);
+  const idx = reviews.findIndex(r => r.id === newReview.id && r.userId === newReview.userId);
   if (idx > -1) {
     reviews[idx] = newReview;
   } else {
@@ -111,5 +111,5 @@ export function addOrUpdateReview(newReview: ReviewWithUser) {
 }
 
 export function deleteReview(id: string, userId: string) {
-  reviews = reviews.filter(r => r.id !== id);
+  reviews = reviews.filter(r => !(r.id === id && r.userId === userId));
 } 
