@@ -5,7 +5,7 @@ export type NewContentData = {
   title: string;
   description: string;
   thumbnailUrl: string;
-  type: 'movie' | 'tv-show' | 'book';
+  type: 'movie' | 'tv-show' | 'book' | 'video-game';
 };
 
 type AddContentDialogProps = {
@@ -20,7 +20,7 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
   const [description, setDescription] = useState('');
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
-  const [type, setType] = useState<'movie' | 'tv-show' | 'book'>('movie');
+  const [type, setType] = useState<'movie' | 'tv-show' | 'book' | 'video-game'>('movie');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const accent = color === 'cyan' ? 'cyan' : 'pink';
 
@@ -74,15 +74,17 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
+              <label htmlFor="type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
               <select
+                id="type"
                 value={type}
-                onChange={e => setType(e.target.value as 'movie' | 'tv-show' | 'book')}
-                className={`mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm sm:text-sm px-3 py-2 focus:ring-2 focus:ring-${accent}-500 focus:border-${accent}-500`}
+                onChange={e => setType(e.target.value as 'movie' | 'tv-show' | 'book' | 'video-game')}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm rounded-lg bg-white dark:bg-gray-700 px-3"
               >
                 <option value="movie">Movie</option>
                 <option value="tv-show">TV Show</option>
                 <option value="book">Book</option>
+                <option value="video-game">Video Game</option>
               </select>
             </div>
             <div>

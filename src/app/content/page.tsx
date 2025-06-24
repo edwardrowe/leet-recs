@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import { Content } from "@/components/AddReviewDialog";
+import { Content } from "@/lib/contentStore";
 import AddContentDialog, { NewContentData } from "@/components/AddContentDialog";
 import NavBar from "@/components/NavBar";
 import Image from "next/image";
 import Fab from "@/components/Fab";
-import { getContentList, addContent } from "@/lib/contentStore";
+import { getContentList, addContent, ContentType } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
-import AddReviewDialog, { Content as ReviewContent, NewReviewData } from "@/components/AddReviewDialog";
+import AddReviewDialog, { NewReviewData } from "@/components/AddReviewDialog";
 import { getReviews, addOrUpdateReview } from "@/lib/reviewStore";
 import { getPeople, CURRENT_USER_ID } from "@/lib/peopleStore";
 import { getReviewsByContentId } from "@/lib/reviewStore";
@@ -15,11 +15,11 @@ import { getReviewsByContentId } from "@/lib/reviewStore";
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [typeFilter, setTypeFilter] = useState<'all' | 'movie' | 'tv-show' | 'book'>('all');
+  const [typeFilter, setTypeFilter] = useState<'all' | ContentType>('all');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [search, setSearch] = useState('');
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
-  const [reviewContent, setReviewContent] = useState<ReviewContent | null>(null);
+  const [reviewContent, setReviewContent] = useState<Content | null>(null);
   const [reviewedFilter, setReviewedFilter] = useState<'all' | 'reviewed' | 'not-reviewed'>('all');
   const reviewedIds = new Set(getReviews().filter(r => r.userId === CURRENT_USER_ID).map(r => r.id));
   const [_, setForceUpdate] = useState(0);
@@ -80,6 +80,7 @@ export default function ContentPage() {
           <button onClick={() => setTypeFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'movie' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Movies</button>
           <button onClick={() => setTypeFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'tv-show' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>TV Shows</button>
           <button onClick={() => setTypeFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'book' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Books</button>
+          <button onClick={() => setTypeFilter('video-game')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'video-game' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Video Games</button>
           {/* Vertical divider */}
           <span className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           {/* Show filter */}

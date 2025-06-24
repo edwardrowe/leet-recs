@@ -1,4 +1,6 @@
-import { Content } from "@/components/AddReviewDialog";
+// import { Content } from "@/components/AddReviewDialog";
+
+export type ContentType = 'movie' | 'tv-show' | 'book' | 'video-game';
 
 let contentList: Content[] = [
   { id: "1", title: "Inception", type: "movie", description: "A mind-bending thriller about dreaming within dreams.", thumbnailUrl: "https://picsum.photos/seed/inception/400/300" },
@@ -7,6 +9,7 @@ let contentList: Content[] = [
   { id: "4", title: "The Office", type: "tv-show", description: "A mockumentary about the everyday lives of office employees.", thumbnailUrl: "https://picsum.photos/seed/the-office/400/300" },
   { id: "5", title: "Dune", type: "book", description: "A sci-fi epic about a young nobleman's destiny on a desert planet.", thumbnailUrl: "https://picsum.photos/seed/dune/400/300" },
   { id: "6", title: "The Matrix", type: "movie", description: "A hacker discovers the shocking truth about his reality.", thumbnailUrl: "https://picsum.photos/seed/the-matrix/400/300" },
+  { id: "7", title: "The Legend of Zelda: Breath of the Wild", type: "video-game", description: "An epic open-world adventure game set in Hyrule.", thumbnailUrl: "https://picsum.photos/seed/zelda/400/300" },
 ];
 
 export function getContentList() {
@@ -15,4 +18,13 @@ export function getContentList() {
 
 export function addContent(newContent: Content) {
   contentList = [...contentList, newContent];
-} 
+}
+
+// This is the shape of the content in our "database"
+export type Content = {
+  id: string;
+  title: string;
+  type: ContentType;
+  description: string;
+  thumbnailUrl?: string;
+}; 

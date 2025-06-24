@@ -2,18 +2,18 @@
 
 import ReviewCard from "@/components/ReviewCard";
 import { useState } from "react";
-import AddReviewDialog, { Content, NewReviewData, Review } from "@/components/AddReviewDialog";
+import AddReviewDialog, { NewReviewData, Review } from "@/components/AddReviewDialog";
 import { ReviewWithUser } from "@/lib/reviewStore";
 import Fab from "@/components/Fab";
 import UserProfile from "@/components/UserProfile";
 import EmptyState from "@/components/EmptyState";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import NavBar from "@/components/NavBar";
-import { getContentList } from "@/lib/contentStore";
+import { getContentList, ContentType, Content } from "@/lib/contentStore";
 import { CURRENT_USER_ID } from "@/lib/peopleStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import { getReviews, addOrUpdateReview, deleteReview } from "@/lib/reviewStore";
-import { FaFilm, FaTv, FaBook } from "react-icons/fa";
+import { FaFilm, FaTv, FaBook, FaGamepad } from "react-icons/fa";
 import Image from "next/image";
 
 // This is the shape of a review that has been saved
@@ -36,6 +36,7 @@ function ReviewRow({ review, onEdit }: { review: ReviewWithUser; onEdit: () => v
   let icon;
   if (review.type === "movie") icon = <FaFilm className="text-2xl text-pink-600" />;
   else if (review.type === "tv-show") icon = <FaTv className="text-2xl text-pink-600" />;
+  else if (review.type === "video-game") icon = <FaGamepad className="text-2xl text-pink-600" />;
   else icon = <FaBook className="text-2xl text-pink-600" />;
   return (
     <div className="flex items-center border-b border-gray-200 dark:border-gray-700 py-4 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={onEdit}>
@@ -65,7 +66,7 @@ function ReviewRow({ review, onEdit }: { review: ReviewWithUser; onEdit: () => v
 
 export default function Home() {
   const [reviews, setReviews] = useState<ReviewWithUser[]>(getReviews().filter(r => r.userId === CURRENT_USER_ID));
-  const [filter, setFilter] = useState<'all' | 'movie' | 'tv-show' | 'book'>('all');
+  const [filter, setFilter] = useState<'all' | ContentType>('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'title'>('rating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -150,7 +151,10 @@ export default function Home() {
     if (filter === 'all' && reviews.length === 0) {
       return "You haven't added any reviews yet. Click the '+' to get started!";
     }
-    const typeName = filter === 'tv-show' ? 'TV shows' : `${filter}s`;
+    let typeName;
+    if (filter === 'tv-show') typeName = 'TV shows';
+    else if (filter === 'video-game') typeName = 'Video games';
+    else typeName = `${filter}s`;
     return `No ${typeName} found in your reviews.`;
   };
 
@@ -174,6 +178,7 @@ export default function Home() {
           <button onClick={() => setFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'movie' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Movies</button>
           <button onClick={() => setFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'tv-show' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>TV Shows</button>
           <button onClick={() => setFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'book' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Books</button>
+          <button onClick={() => setFilter('video-game')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'video-game' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Video Games</button>
         </div>
         <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4">
           <input

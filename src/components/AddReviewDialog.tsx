@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-
-// This is the shape of the content in our "database"
-export type Content = {
-  id: string;
-  title: string;
-  type: 'movie' | 'tv-show' | 'book';
-  description: string;
-  thumbnailUrl?: string;
-};
+import { Content, ContentType } from '@/lib/contentStore';
 
 // This is the shape of the data the dialog will return
 export type NewReviewData = {
@@ -18,7 +10,8 @@ export type NewReviewData = {
 };
 
 // The full review shape, needed for edit mode
-export type Review = Content & {
+export type Review = Omit<Content, 'type'> & {
+  type: ContentType;
   rating: number;
   personalNotes?: string;
 };

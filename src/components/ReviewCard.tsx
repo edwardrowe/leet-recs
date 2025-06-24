@@ -1,11 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
+import { ContentType } from '@/lib/contentStore';
 
 type ReviewCardProps = {
   title: string;
   description: string;
   rating: number;
-  type: 'movie' | 'tv-show' | 'book';
+  type: ContentType;
   personalNotes?: string;
   thumbnailUrl?: string;
   onEdit: () => void;
