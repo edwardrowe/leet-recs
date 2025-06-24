@@ -49,6 +49,15 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
     }
   }, [isOpen, isEditMode, reviewToEdit, contentDatabase]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   const handleSave = () => {
     const contentId = isEditMode ? reviewToEdit.id : selectedContentId;
     if (!contentId) {

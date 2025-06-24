@@ -265,13 +265,15 @@ export default function Home() {
         onDelete={handleOpenDeleteConfirmDialog}
       />
 
-      <ConfirmationDialog
-        isOpen={isConfirmDeleteDialogOpen}
-        onClose={() => setIsConfirmDeleteDialogOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="Confirm Deletion"
-        message={`Are you sure you want to delete your review for "${reviewToDelete?.title}"? This action cannot be undone.`}
-      />
+      {isConfirmDeleteDialogOpen && reviewToDelete && (
+        <ConfirmationDialog
+          isOpen={true}
+          onClose={() => setIsConfirmDeleteDialogOpen(false)}
+          onConfirm={handleConfirmDelete}
+          title="Confirm Deletion"
+          message={`Are you sure you want to delete your review for "${reviewToDelete.title}"? This action cannot be undone.`}
+        />
+      )}
     </main>
   );
 }
