@@ -9,6 +9,8 @@ import { getContentList, addContent } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import AddReviewDialog, { Content as ReviewContent, NewReviewData } from "@/components/AddReviewDialog";
 import { getReviews, addOrUpdateReview } from "@/lib/reviewStore";
+import { getPeople, CURRENT_USER_ID } from "@/lib/peopleStore";
+import { getReviewsByContentId } from "@/lib/reviewStore";
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
@@ -60,6 +62,7 @@ export default function ContentPage() {
       ...reviewContent,
       rating: data.rating,
       personalNotes: data.personalNotes,
+      userId: CURRENT_USER_ID,
     };
     addOrUpdateReview(newReview);
     setForceUpdate(x => x + 1); // force re-render
@@ -119,36 +122,61 @@ export default function ContentPage() {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
-        {filteredSortedContent.map((item) => (
-          <div key={item.id} className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden">
-            {item.thumbnailUrl && (
-              <div className="relative h-48 w-full">
-                <Image
-                  src={item.thumbnailUrl}
-                  alt={`Thumbnail for ${item.title}`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
-            <div className="p-4 flex flex-col flex-grow">
-              <h2 className="text-2xl font-bold mb-1">{item.title}</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{item.type}</p>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">{item.description}</p>
-              {!reviewedIds.has(item.id) && (
-                <button
-                  className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700"
-                  onClick={() => {
-                    setReviewContent(item);
-                    setReviewDialogOpen(true);
-                  }}
-                >
-                  Add to My Recs
-                </button>
+        {filteredSortedContent.map((item) => {
+          // Find reviews for this content
+          const reviews = getReviewsByContentId(item.id);
+          // Get followed friends
+          const people = getPeople();
+          const followedFriends = people.filter(p => p.followed && p.id !== 'me');
+          // Find which followed friends reviewed this content
+          const friendReviewers = reviews.filter(r => followedFriends.some(f => f.id === r.userId));
+          const friendAvatars = friendReviewers
+            .map(r => {
+              const person = people.find(p => p.id === r.userId);
+              return person ? { id: person.id, name: person.name, avatarUrl: person.avatarUrl } : undefined;
+            })
+            .filter((f): f is { id: string; name: string; avatarUrl: string } => Boolean(f));
+          return (
+            <div key={item.id} className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden">
+              {item.thumbnailUrl && (
+                <div className="relative h-48 w-full">
+                  <Image
+                    src={item.thumbnailUrl}
+                    alt={`Thumbnail for ${item.title}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               )}
+              <div className="p-4 flex flex-col flex-grow">
+                <h2 className="text-2xl font-bold mb-1">{item.title}</h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{item.type}</p>
+                <p className="text-gray-700 dark:text-gray-300 mb-4">{item.description}</p>
+                {friendAvatars.length > 0 && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">Reviewed by:</span>
+                    {friendAvatars.map(f => (
+                      <div key={f.id} className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-cyan-600" title={f.name}>
+                        <Image src={f.avatarUrl} alt={f.name} fill className="object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {!reviewedIds.has(item.id) && (
+                  <button
+                    className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700"
+                    onClick={() => {
+                      setReviewContent(item);
+                      setReviewDialogOpen(true);
+                    }}
+                  >
+                    Add to My Recs
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <Fab onClick={() => setIsDialogOpen(true)} color="cyan" />
       <AddContentDialog
