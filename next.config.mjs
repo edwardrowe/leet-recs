@@ -7,6 +7,10 @@ const nextConfig = {
         hostname: 'picsum.photos',
       },
     ],
+    domains: [
+      "picsum.photos",
+      "randomuser.me",
+    ],
   },
 };
 
