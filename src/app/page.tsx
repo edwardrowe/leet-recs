@@ -3,12 +3,14 @@
 import ReviewCard from "@/components/ReviewCard";
 import { useState } from "react";
 import AddReviewDialog, { Content, NewReviewData, Review } from "@/components/AddReviewDialog";
+import { ReviewWithUser } from "@/lib/reviewStore";
 import Fab from "@/components/Fab";
 import UserProfile from "@/components/UserProfile";
 import EmptyState from "@/components/EmptyState";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import NavBar from "@/components/NavBar";
 import { getContentList } from "@/lib/contentStore";
+import { CURRENT_USER_ID } from "@/lib/peopleStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import { getReviews, addOrUpdateReview, deleteReview } from "@/lib/reviewStore";
 import { FaFilm, FaTv, FaBook } from "react-icons/fa";
@@ -28,28 +30,9 @@ import Image from "next/image";
 //   { id: "6", title: "The Matrix", type: "movie", description: "A hacker discovers the shocking truth about his reality.", thumbnailUrl: "https://picsum.photos/seed/the-matrix/400/300" },
 // ];
 
-// This is the initial set of reviews already on the page
-// const initialReviews: Review[] = [
-//   {
-//     id: "3",
-//     title: "Project Hail Mary",
-//     description: "A lone astronaut must save the Earth from a mysterious threat.",
-//     rating: 9,
-//     type: "book" as const,
-//     thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300",
-//   },
-//   {
-//     id: "2",
-//     title: "Fleabag",
-//     description: "A hilarious and heartbreaking look at a young woman's life in London.",
-//     rating: 10,
-//     type: "tv-show" as const,
-//     personalNotes: "The 'hot priest' season is a masterpiece of television.",
-//     thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300",
-//   },
-// ];
+// No longer needed: initialReviews are now in reviewStore
 
-function ReviewRow({ review, onEdit }: { review: Review; onEdit: () => void }) {
+function ReviewRow({ review, onEdit }: { review: ReviewWithUser; onEdit: () => void }) {
   let icon;
   if (review.type === "movie") icon = <FaFilm className="text-2xl text-pink-600" />;
   else if (review.type === "tv-show") icon = <FaTv className="text-2xl text-pink-600" />;
@@ -62,27 +45,34 @@ function ReviewRow({ review, onEdit }: { review: Review; onEdit: () => void }) {
         </div>
       )}
       <div className="mr-4 flex-shrink-0">{icon}</div>
-      <div className="flex-1">
-        <div className="font-semibold text-lg">{review.title}</div>
-        {review.personalNotes && <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">{review.personalNotes}</div>}
+      <div className="flex-1 min-w-0">
+        <div className="font-semibold text-lg truncate">{review.title}</div>
+        <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">{review.description}</div>
       </div>
-      <div className="text-right min-w-[48px]">
-        <span className="inline-block bg-pink-600 text-white rounded-full px-3 py-1 font-bold text-lg">{review.rating}</span>
+      <div className="flex flex-row items-center gap-2 min-w-[120px] justify-end ml-2">
+        {review.personalNotes && (
+          <div className="text-xs text-gray-500 dark:text-gray-400 text-right max-w-xs truncate" title={review.personalNotes}>
+            <span className="font-semibold text-gray-400 dark:text-gray-500">Notes:</span> {review.personalNotes}
+          </div>
+        )}
+        <div className="text-right min-w-[48px]">
+          <span className="inline-block bg-pink-600 text-white rounded-full px-3 py-1 font-bold text-lg">{review.rating}</span>
+        </div>
       </div>
     </div>
   );
 }
 
 export default function Home() {
-  const [reviews, setReviews] = useState<Review[]>(getReviews());
+  const [reviews, setReviews] = useState<ReviewWithUser[]>(getReviews().filter(r => r.userId === CURRENT_USER_ID));
   const [filter, setFilter] = useState<'all' | 'movie' | 'tv-show' | 'book'>('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'title'>('rating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [reviewToEdit, setReviewToEdit] = useState<Review | null>(null);
+  const [reviewToEdit, setReviewToEdit] = useState<ReviewWithUser | null>(null);
   const [isConfirmDeleteDialogOpen, setIsConfirmDeleteDialogOpen] = useState(false);
-  const [reviewToDelete, setReviewToDelete] = useState<Review | null>(null);
+  const [reviewToDelete, setReviewToDelete] = useState<ReviewWithUser | null>(null);
   const [view, setView] = useState<'grid' | 'row'>('grid');
 
   const currentUser = {
@@ -95,7 +85,7 @@ export default function Home() {
     setIsDialogOpen(true);
   };
 
-  const handleOpenEditDialog = (review: Review) => {
+  const handleOpenEditDialog = (review: ReviewWithUser) => {
     setReviewToEdit(review);
     setIsDialogOpen(true);
   };
@@ -115,8 +105,8 @@ export default function Home() {
 
   const handleConfirmDelete = () => {
     if (reviewToDelete) {
-      deleteReview(reviewToDelete.id);
-      setReviews(getReviews());
+      deleteReview(reviewToDelete.id, reviewToDelete.userId);
+      setReviews(getReviews().filter(r => r.userId === CURRENT_USER_ID));
       setIsConfirmDeleteDialogOpen(false);
       setReviewToDelete(null);
     }
@@ -126,13 +116,14 @@ export default function Home() {
     const content = getContentList().find(c => c.id === newReviewData.contentId);
     if (!content) return;
 
-    const newReview: Review = {
+    const newReview: ReviewWithUser = {
       ...content,
       rating: newReviewData.rating,
       personalNotes: newReviewData.personalNotes,
+      userId: CURRENT_USER_ID,
     };
     addOrUpdateReview(newReview);
-    setReviews(getReviews());
+    setReviews(getReviews().filter(r => r.userId === CURRENT_USER_ID));
   };
 
   const filteredAndSortedReviews = reviews
@@ -229,8 +220,8 @@ export default function Home() {
 
       {view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
-          {filteredAndSortedReviews.length > 0 ? (
-            filteredAndSortedReviews.map((review) => (
+          {(filteredAndSortedReviews as ReviewWithUser[]).length > 0 ? (
+            (filteredAndSortedReviews as ReviewWithUser[]).map((review) => (
               <ReviewCard
                 key={review.id}
                 title={review.title}
@@ -248,8 +239,8 @@ export default function Home() {
         </div>
       ) : (
         <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
-          {filteredAndSortedReviews.length > 0 ? (
-            filteredAndSortedReviews.map((review) => (
+          {(filteredAndSortedReviews as ReviewWithUser[]).length > 0 ? (
+            (filteredAndSortedReviews as ReviewWithUser[]).map((review) => (
               <ReviewRow key={review.id} review={review} onEdit={() => handleOpenEditDialog(review)} />
             ))
           ) : (

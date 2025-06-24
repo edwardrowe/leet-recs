@@ -6,7 +6,7 @@ export type ReviewWithUser = Review & { userId: string };
 let reviews: ReviewWithUser[] = [
   // Elrowe (me)
   {
-    id: "3",
+    id: "1",
     userId: CURRENT_USER_ID,
     title: "Project Hail Mary",
     description: "A lone astronaut must save the Earth from a mysterious threat.",
@@ -26,7 +26,7 @@ let reviews: ReviewWithUser[] = [
   },
   // Alice
   {
-    id: "1",
+    id: "3",
     userId: "1",
     title: "Inception",
     description: "A mind-bending thriller about dreaming within dreams.",
@@ -36,7 +36,7 @@ let reviews: ReviewWithUser[] = [
     personalNotes: "Loved the visuals!"
   },
   {
-    id: "3",
+    id: "4",
     userId: "1",
     title: "Project Hail Mary",
     description: "A lone astronaut must save the Earth from a mysterious threat.",
@@ -47,7 +47,7 @@ let reviews: ReviewWithUser[] = [
   },
   // Bob
   {
-    id: "2",
+    id: "5",
     userId: "2",
     title: "Fleabag",
     description: "A hilarious and heartbreaking look at a young woman's life in London.",
@@ -68,7 +68,7 @@ let reviews: ReviewWithUser[] = [
   },
   // Diana
   {
-    id: "4",
+    id: "7",
     userId: "4",
     title: "The Office",
     description: "A mockumentary about the everyday lives of office employees.",
@@ -78,7 +78,7 @@ let reviews: ReviewWithUser[] = [
     personalNotes: "So many laughs."
   },
   {
-    id: "5",
+    id: "8",
     userId: "4",
     title: "Dune",
     description: "A sci-fi epic about a young nobleman's destiny on a desert planet.",
@@ -102,7 +102,7 @@ export function getReviewsByUserId(userId: string) {
 }
 
 export function addOrUpdateReview(newReview: ReviewWithUser) {
-  const idx = reviews.findIndex(r => r.id === newReview.id && r.userId === newReview.userId);
+  const idx = reviews.findIndex(r => r.id === newReview.id);
   if (idx > -1) {
     reviews[idx] = newReview;
   } else {
@@ -111,5 +111,5 @@ export function addOrUpdateReview(newReview: ReviewWithUser) {
 }
 
 export function deleteReview(id: string, userId: string) {
-  reviews = reviews.filter(r => !(r.id === id && r.userId === userId));
+  reviews = reviews.filter(r => r.id !== id);
 } 

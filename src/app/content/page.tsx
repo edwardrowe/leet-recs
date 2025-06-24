@@ -21,7 +21,7 @@ export default function ContentPage() {
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewContent, setReviewContent] = useState<ReviewContent | null>(null);
   const [reviewedFilter, setReviewedFilter] = useState<'all' | 'reviewed' | 'not-reviewed'>('all');
-  const reviewedIds = new Set(getReviews().map(r => r.id));
+  const reviewedIds = new Set(getReviews().filter(r => r.userId === CURRENT_USER_ID).map(r => r.id));
   const [_, setForceUpdate] = useState(0);
 
   const handleAddContent = (data: NewContentData) => {
