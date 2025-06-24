@@ -108,6 +108,7 @@ export default function ContentPage() {
             onChange={e => setSearch(e.target.value)}
             className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
           />
+          <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">Sorted by Title</span>
           <button
             onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
             className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
