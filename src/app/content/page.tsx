@@ -76,29 +76,29 @@ export default function ContentPage() {
       <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
         <div className="flex flex-row items-center gap-2">
           {/* Content type filter */}
-          <button onClick={() => setTypeFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'all' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>All</button>
-          <button onClick={() => setTypeFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'movie' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Movies</button>
-          <button onClick={() => setTypeFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'tv-show' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>TV Shows</button>
-          <button onClick={() => setTypeFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'book' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Books</button>
-          <button onClick={() => setTypeFilter('video-game')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'video-game' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Video Games</button>
+          <button onClick={() => setTypeFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'all' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>All</button>
+          <button onClick={() => setTypeFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'movie' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>Movies</button>
+          <button onClick={() => setTypeFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'tv-show' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>TV Shows</button>
+          <button onClick={() => setTypeFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'book' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>Books</button>
+          <button onClick={() => setTypeFilter('video-game')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'video-game' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>Video Games</button>
           {/* Vertical divider */}
           <span className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
           {/* Show filter */}
           <label className="font-medium">Show:</label>
           <button
-            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'all' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'all' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}
             onClick={() => handleReviewedFilterChange('all')}
           >
             All
           </button>
           <button
-            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'reviewed' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'reviewed' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}
             onClick={() => handleReviewedFilterChange('reviewed')}
           >
             Reviewed
           </button>
           <button
-            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'not-reviewed' ? 'bg-cyan-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'not-reviewed' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}
             onClick={() => handleReviewedFilterChange('not-reviewed')}
           >
             Not Reviewed
@@ -115,7 +115,7 @@ export default function ContentPage() {
           <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">Sorted by Title</span>
           <button
             onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-            className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+            className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
             aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
           >
             {sortDirection === 'asc' ? '↑' : '↓'}
@@ -165,7 +165,7 @@ export default function ContentPage() {
                 )}
                 {!reviewedIds.has(item.id) && (
                   <button
-                    className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700"
+                    className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700 cursor-pointer"
                     onClick={() => {
                       setReviewContent(item);
                       setReviewDialogOpen(true);

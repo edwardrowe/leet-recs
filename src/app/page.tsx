@@ -174,11 +174,11 @@ export default function Home() {
       <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
         <div className="flex flex-row items-center gap-2">
           {/* Content type filter */}
-          <button onClick={() => setFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>All</button>
-          <button onClick={() => setFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'movie' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Movies</button>
-          <button onClick={() => setFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'tv-show' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>TV Shows</button>
-          <button onClick={() => setFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'book' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Books</button>
-          <button onClick={() => setFilter('video-game')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'video-game' ? 'bg-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Video Games</button>
+          <button onClick={() => setFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>All</button>
+          <button onClick={() => setFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'movie' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>Movies</button>
+          <button onClick={() => setFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'tv-show' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>TV Shows</button>
+          <button onClick={() => setFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'book' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>Books</button>
+          <button onClick={() => setFilter('video-game')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'video-game' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>Video Games</button>
         </div>
         <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4">
           <input

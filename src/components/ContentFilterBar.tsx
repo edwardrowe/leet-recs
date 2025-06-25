@@ -24,7 +24,7 @@ const ContentFilterBar: React.FC<ContentFilterBarProps> = ({
   color = 'magenta',
 }) => {
   const accent = color === 'cyan' ? 'cyan' : 'pink';
-  const selectedClass = (active: boolean) => active ? `bg-${accent}-600 text-white` : 'bg-gray-200 dark:bg-gray-700';
+  const selectedClass = (active: boolean) => active ? `bg-${accent}-600 hover:bg-${accent}-700 text-white` : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600';
   return (
     <div className={`w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 ${className}`}>
       <div className="flex gap-2 flex-wrap justify-center">
@@ -43,7 +43,7 @@ const ContentFilterBar: React.FC<ContentFilterBarProps> = ({
         />
         <button
           onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-          className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
+          className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
           aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
         >
           {sortDirection === 'asc' ? '↑' : '↓'}
