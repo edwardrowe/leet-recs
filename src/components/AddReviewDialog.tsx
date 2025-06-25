@@ -77,6 +77,13 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
     <div className="fixed inset-0 z-50 flex justify-center items-center" style={{ background: 'var(--dialog-scrim-bg)' }}>
       <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-md relative">
         <div className="h-2 rounded-t-2xl bg-pink-600 w-full" />
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 shadow text-xl z-10"
+          aria-label="Close"
+        >
+          &times;
+        </button>
         <div className="p-8">
           <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{isEditMode ? 'Edit Review' : 'Add a new review'}</h2>
           {selectedContent && selectedContent.thumbnailUrl && (
@@ -152,9 +159,6 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
               )}
             </div>
             <div className="flex gap-4">
-              <button onClick={onClose} className="px-5 py-2 text-sm font-medium rounded-lg text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 shadow">
-                Cancel
-              </button>
               <button onClick={handleSave} className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-pink-600 hover:bg-pink-700 shadow">
                 Save Review
               </button>
