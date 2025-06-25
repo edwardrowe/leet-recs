@@ -1,7 +1,7 @@
 "use client";
 
 import ReviewCard from "@/components/ReviewCard";
-import { useState } from "react";
+import React, { useState } from "react";
 import AddReviewDialog, { NewReviewData, Review } from "@/components/AddReviewDialog";
 import { ReviewWithUser } from "@/lib/reviewStore";
 import Fab from "@/components/Fab";
@@ -10,13 +10,14 @@ import EmptyState from "@/components/EmptyState";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import NavBar from "@/components/NavBar";
 import { getContentList, ContentType, Content } from "@/lib/contentStore";
-import { CURRENT_USER_ID } from "@/lib/peopleStore";
+import { CURRENT_USER_ID, getPeople } from "@/lib/peopleStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import { getReviews, addOrUpdateReview, deleteReview } from "@/lib/reviewStore";
 import { FaFilm, FaTv, FaBook, FaGamepad } from "react-icons/fa";
 import Image from "next/image";
+import FriendPicker from "@/components/FriendPicker";
 
-function ReviewRow({ review, onEdit }: { review: ReviewWithUser; onEdit: () => void }) {
+function ReviewRow({ review, onEdit, canEdit }: { review: ReviewWithUser; onEdit: () => void; canEdit: boolean }) {
   const getContentIcon = (type: string) => {
     switch (type) {
       case "movie":
@@ -32,7 +33,7 @@ function ReviewRow({ review, onEdit }: { review: ReviewWithUser; onEdit: () => v
   
   const icon = getContentIcon(review.type);
   return (
-    <div className="flex items-center border-b border-gray-200 dark:border-gray-700 py-4 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={onEdit}>
+    <div className={`flex items-center border-b border-gray-200 dark:border-gray-700 py-4 px-2 ${canEdit ? 'hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer' : ''}`} onClick={canEdit ? onEdit : undefined}>
       {review.thumbnailUrl && (
         <div className="relative w-10 h-10 rounded-lg overflow-hidden mr-4 flex-shrink-0">
           <Image src={review.thumbnailUrl} alt={review.title} fill className="object-cover" />
@@ -58,6 +59,7 @@ function ReviewRow({ review, onEdit }: { review: ReviewWithUser; onEdit: () => v
 }
 
 export default function Home() {
+  const [selectedFriendId, setSelectedFriendId] = useState<string | null>(null);
   const [reviews, setReviews] = useState<ReviewWithUser[]>(getReviews().filter(r => r.userId === CURRENT_USER_ID));
   const [filter, setFilter] = useState<'all' | ContentType>('all');
   const [search, setSearch] = useState('');
@@ -69,9 +71,26 @@ export default function Home() {
   const [reviewToDelete, setReviewToDelete] = useState<ReviewWithUser | null>(null);
   const [view, setView] = useState<'grid' | 'row'>('grid');
 
-  const currentUser = {
+  const people = getPeople();
+  const currentUser = people.find(p => p.id === CURRENT_USER_ID) || {
     name: 'Elrowe',
     avatarUrl: 'https://picsum.photos/seed/elrowe-avatar/200',
+  };
+  const selectedFriend = selectedFriendId ? people.find(p => p.id === selectedFriendId) : null;
+
+  // Update reviews when friend selection changes
+  const updateReviews = () => {
+    const targetUserId = selectedFriendId || CURRENT_USER_ID;
+    setReviews(getReviews().filter(r => r.userId === targetUserId));
+  };
+
+  // Update reviews whenever selectedFriendId changes
+  React.useEffect(() => {
+    updateReviews();
+  }, [selectedFriendId]);
+
+  const handleFriendSelect = (friendId: string | null) => {
+    setSelectedFriendId(friendId);
   };
 
   const handleOpenAddDialog = () => {
@@ -100,7 +119,7 @@ export default function Home() {
   const handleConfirmDelete = () => {
     if (reviewToDelete) {
       deleteReview(reviewToDelete.id, reviewToDelete.userId);
-      setReviews(getReviews().filter(r => r.userId === CURRENT_USER_ID));
+      updateReviews();
       setIsConfirmDeleteDialogOpen(false);
       setReviewToDelete(null);
     }
@@ -117,7 +136,7 @@ export default function Home() {
       userId: CURRENT_USER_ID,
     };
     addOrUpdateReview(newReview);
-    setReviews(getReviews().filter(r => r.userId === CURRENT_USER_ID));
+    updateReviews();
   };
 
   const filteredAndSortedReviews = reviews
@@ -141,27 +160,40 @@ export default function Home() {
     });
 
   const getEmptyStateMessage = () => {
+    const personName = selectedFriend ? selectedFriend.name : 'You';
     if (filter === 'all' && reviews.length === 0) {
-      return "You haven't added any reviews yet. Click the '+' to get started!";
+      return selectedFriend 
+        ? `${personName} hasn't added any reviews yet.`
+        : "You haven't added any reviews yet. Click the '+' to get started!";
     }
     let typeName;
     if (filter === 'tv-show') typeName = 'TV shows';
     else if (filter === 'video-game') typeName = 'Video games';
     else typeName = `${filter}s`;
-    return `No ${typeName} found in your reviews.`;
+    return `No ${typeName} found in ${personName.toLowerCase()}'s reviews.`;
   };
 
-  // Exclude already reviewed content from the dialog dropdown
-  const availableContentToReview = getContentList().filter(
+  // Only show add button if viewing own reviews
+  const canAddReviews = selectedFriendId === null;
+
+  // Exclude already reviewed content from the dialog dropdown (only for own reviews)
+  const availableContentToReview = canAddReviews ? getContentList().filter(
     content => !reviews.some(review => review.id === content.id)
-  );
+  ) : [];
 
   return (
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
       <NavBar />
       <header className="w-full max-w-6xl flex justify-between items-center">
-        <h1 className="text-5xl font-bold">My Recs</h1>
-        <UserProfile name={currentUser.name} avatarUrl={currentUser.avatarUrl} />
+        <div className="flex items-center gap-4">
+          <h1 className="text-5xl font-bold">
+            {selectedFriend ? `${selectedFriend.name}'s Recs` : 'My Recs'}
+          </h1>
+          <FriendPicker 
+            selectedFriendId={selectedFriendId} 
+            onFriendSelect={handleFriendSelect} 
+          />
+        </div>
       </header>
 
       <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
@@ -228,7 +260,7 @@ export default function Home() {
                 type={review.type}
                 personalNotes={review.personalNotes}
                 thumbnailUrl={review.thumbnailUrl}
-                onEdit={() => handleOpenEditDialog(review)}
+                onEdit={canAddReviews ? () => handleOpenEditDialog(review) : undefined}
               />
             ))
           ) : (
@@ -239,7 +271,7 @@ export default function Home() {
         <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
           {(filteredAndSortedReviews as ReviewWithUser[]).length > 0 ? (
             (filteredAndSortedReviews as ReviewWithUser[]).map((review) => (
-              <ReviewRow key={review.id} review={review} onEdit={() => handleOpenEditDialog(review)} />
+              <ReviewRow key={review.id} review={review} onEdit={() => handleOpenEditDialog(review)} canEdit={canAddReviews} />
             ))
           ) : (
             <EmptyState message={getEmptyStateMessage()} />
@@ -247,7 +279,7 @@ export default function Home() {
         </div>
       )}
       
-      <Fab onClick={handleOpenAddDialog} />
+      {canAddReviews && <Fab onClick={handleOpenAddDialog} />}
 
       <AddReviewDialog
         isOpen={isDialogOpen}
