@@ -157,14 +157,15 @@ export default function Home() {
         review.description.toLowerCase().includes(search.toLowerCase()))
     )
     .sort((a, b) => {
-      const direction = sortDirection === 'asc' ? 1 : -1;
       if (sortBy === 'rating') {
-        if (b.rating === a.rating) {
-          return a.title.localeCompare(b.title) * direction;
+        if (a.rating === b.rating) {
+          return a.title.localeCompare(b.title);
         }
-        return (b.rating - a.rating) * direction;
+        // Descending: highest to lowest
+        return sortDirection === 'desc' ? b.rating - a.rating : a.rating - b.rating;
       }
       if (sortBy === 'title') {
+        const direction = sortDirection === 'asc' ? 1 : -1;
         return a.title.localeCompare(b.title) * direction;
       }
       return 0;
