@@ -19,8 +19,8 @@ export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState<'all' | ContentType>('all');
-  const [sortBy, setSortBy] = useState<'title' | 'avgRating'>('title');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortBy, setSortBy] = useState<'title' | 'avgRating'>('avgRating');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [search, setSearch] = useState('');
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewContent, setReviewContent] = useState<Content | null>(null);
