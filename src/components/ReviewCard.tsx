@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { ContentType } from '@/lib/contentStore';
+import { FaFilm, FaTv, FaBook, FaGamepad } from 'react-icons/fa';
 
 type ReviewCardProps = {
   title: string;
@@ -33,9 +34,16 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ title, description, rating, typ
       )}
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex-grow">
-          <h2 className="text-2xl font-bold mb-1">{title}</h2>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="min-w-[20px] min-h-[20px] flex items-center justify-center">
+              {type === 'movie' && <FaFilm className="w-5 h-5 text-pink-600" aria-label="Movie" />}
+              {type === 'tv-show' && <FaTv className="w-5 h-5 text-pink-600" aria-label="TV Show" />}
+              {type === 'video-game' && <FaGamepad className="w-5 h-5 text-pink-600" aria-label="Video Game" />}
+              {type === 'book' && <FaBook className="w-5 h-5 text-pink-600" aria-label="Book" />}
+            </span>
+            <h2 className="text-2xl font-bold truncate flex-1">{title}</h2>
+          </div>
           {reviewedDate && <div className="text-xs text-gray-400 dark:text-gray-500 mb-1">{reviewedDate}</div>}
-          <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{type}</p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">{description}</p>
           {personalNotes && (
             <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
