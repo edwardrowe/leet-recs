@@ -18,6 +18,17 @@ import Image from "next/image";
 import FriendPicker from "@/components/FriendPicker";
 import SortPicker, { SortOption } from "@/components/SortPicker";
 
+function formatReviewDate(timestamp: number): string {
+  const now = Date.now();
+  const diff = now - timestamp;
+  const days = Math.floor(diff / 86400000);
+  if (days === 0) return 'Reviewed today';
+  if (days === 1) return 'Reviewed yesterday';
+  if (days < 7) return `Reviewed ${days} days ago`;
+  const date = new Date(timestamp);
+  return `Reviewed on ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
+}
+
 function ReviewRow({ review, onEdit, canEdit }: { review: ReviewWithContent; onEdit: () => void; canEdit: boolean }) {
   const getContentIcon = (type: string) => {
     switch (type) {
@@ -44,6 +55,7 @@ function ReviewRow({ review, onEdit, canEdit }: { review: ReviewWithContent; onE
       <div className="flex-1 min-w-0">
         <div className="font-semibold text-lg truncate">{review.title}</div>
         <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">{review.description}</div>
+        <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">{formatReviewDate(review.timestamp)}</div>
       </div>
       <div className="flex flex-row items-center gap-2 min-w-[120px] justify-end ml-2">
         {review.personalNotes && (
@@ -132,6 +144,7 @@ export default function Home() {
       rating: newReviewData.rating,
       personalNotes: newReviewData.personalNotes,
       userId: CURRENT_USER_ID,
+      timestamp: Date.now(),
     };
     addOrUpdateReview(newReview);
     updateReviews();
@@ -260,6 +273,7 @@ export default function Home() {
                 personalNotes={review.personalNotes}
                 thumbnailUrl={review.thumbnailUrl}
                 onEdit={canAddReviews ? () => handleOpenEditDialog(review) : undefined}
+                reviewedDate={formatReviewDate(review.timestamp)}
               />
             ))
           ) : (

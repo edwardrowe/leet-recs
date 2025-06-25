@@ -10,9 +10,10 @@ type ReviewCardProps = {
   personalNotes?: string;
   thumbnailUrl?: string;
   onEdit?: () => void;
+  reviewedDate?: string;
 };
 
-const ReviewCard: React.FC<ReviewCardProps> = ({ title, description, rating, type, personalNotes, thumbnailUrl, onEdit }) => {
+const ReviewCard: React.FC<ReviewCardProps> = ({ title, description, rating, type, personalNotes, thumbnailUrl, onEdit, reviewedDate }) => {
   return (
     <div
       className={
@@ -33,6 +34,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ title, description, rating, typ
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex-grow">
           <h2 className="text-2xl font-bold mb-1">{title}</h2>
+          {reviewedDate && <div className="text-xs text-gray-400 dark:text-gray-500 mb-1">{reviewedDate}</div>}
           <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{type}</p>
           <p className="text-gray-700 dark:text-gray-300 mb-4">{description}</p>
           {personalNotes && (

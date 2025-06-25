@@ -15,6 +15,17 @@ interface ViewContentDialogProps {
   canAddToRatings: boolean;
 }
 
+function formatReviewDateShort(timestamp: number): string {
+  const now = Date.now();
+  const diff = now - timestamp;
+  const days = Math.floor(diff / 86400000);
+  if (days === 0) return 'today';
+  if (days === 1) return 'yesterday';
+  if (days < 7) return `${days} days ago`;
+  const date = new Date(timestamp);
+  return `on ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
+}
+
 const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, content, reviews, onEdit, onAddToRatings, canAddToRatings }) => {
   // Add Escape key handler
   useEffect(() => {
@@ -95,6 +106,7 @@ const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, 
                       <div className="flex items-center gap-2 mb-1">
                         <span className={`font-semibold ${review.userId === CURRENT_USER_ID ? 'text-cyan-800 dark:text-cyan-200' : 'text-gray-800 dark:text-gray-200'}`}>{review.userId === CURRENT_USER_ID ? 'Me (You)' : getName(review.userId)}</span>
                         <span className="ml-2 inline-block bg-cyan-600 text-white rounded-full px-3 py-1 font-bold text-lg">{review.rating}</span>
+                        <span className="text-xs text-gray-400 ml-2">{formatReviewDateShort(review.timestamp)}</span>
                       </div>
                       {review.personalNotes && (
                         <div className={`text-sm italic ${review.userId === CURRENT_USER_ID ? 'text-cyan-900 dark:text-cyan-100' : 'text-gray-600 dark:text-gray-400'}`}>{review.personalNotes}</div>

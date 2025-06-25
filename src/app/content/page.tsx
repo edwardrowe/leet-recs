@@ -19,7 +19,7 @@ export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState<'all' | ContentType>('all');
-  const [sortBy, setSortBy] = useState<'title' | 'avgRating'>('avgRating');
+  const [sortBy, setSortBy] = useState<'title' | 'avgRating' | 'lastReviewed'>('avgRating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [search, setSearch] = useState('');
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
@@ -51,6 +51,7 @@ export default function ContentPage() {
   const sortOptions: SortOption[] = [
     { value: 'title', label: 'Title' },
     { value: 'avgRating', label: 'Average rating' },
+    { value: 'lastReviewed', label: 'Last Reviewed' },
   ];
 
   // Filtering and sorting logic
@@ -77,6 +78,15 @@ export default function ContentPage() {
         if (aAvg === bAvg) return a.title.localeCompare(b.title) * direction;
         return (aAvg - bAvg) * direction;
       }
+      if (sortBy === 'lastReviewed') {
+        // If both are undefined, sort by title
+        if (!a.lastReviewed && !b.lastReviewed) return a.title.localeCompare(b.title) * direction;
+        // If only one is undefined, put it last (or first if ascending)
+        if (!a.lastReviewed) return 1 * direction;
+        if (!b.lastReviewed) return -1 * direction;
+        if (a.lastReviewed === b.lastReviewed) return a.title.localeCompare(b.title) * direction;
+        return (a.lastReviewed - b.lastReviewed) * direction;
+      }
       return 0;
     });
 
@@ -89,6 +99,7 @@ export default function ContentPage() {
       rating: data.rating,
       personalNotes: data.personalNotes,
       userId: CURRENT_USER_ID,
+      timestamp: Date.now(),
     };
     addOrUpdateReview(newReview);
     setForceUpdate(x => x + 1); // force re-render
@@ -104,6 +115,12 @@ export default function ContentPage() {
     setPendingDeleteContent(null);
     setConfirmDeleteOpen(false);
   };
+
+  function formatLastReviewedDate(timestamp?: number): string {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return `Last reviewed on ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
@@ -152,7 +169,7 @@ export default function ContentPage() {
           <SortPicker
             options={sortOptions}
             value={sortBy}
-            onChange={val => setSortBy(val as 'title' | 'avgRating')}
+            onChange={val => setSortBy(val as 'title' | 'avgRating' | 'lastReviewed')}
           />
           <button
             onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
@@ -191,7 +208,7 @@ export default function ContentPage() {
               }}
             >
               {/* Average rating display */}
-              <div className="absolute top-4 left-4 z-10 flex items-center">
+              <div className="absolute top-4 left-4 z-10 flex flex-col items-start gap-1">
                 {avgRating !== null && (
                   <span className="text-4xl font-extrabold text-cyan-600 bg-white dark:bg-gray-900 rounded-full px-4 py-1 shadow border-2 border-cyan-200 dark:border-cyan-800">{avgRating}</span>
                 )}
@@ -208,6 +225,9 @@ export default function ContentPage() {
               )}
               <div className="p-4 flex flex-col flex-grow">
                 <h2 className="text-2xl font-bold mb-1">{item.title}</h2>
+                {item.lastReviewed && (
+                  <div className="text-xs text-gray-400 dark:text-gray-500 mb-1">{formatLastReviewedDate(item.lastReviewed)}</div>
+                )}
                 <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{item.type}</p>
                 <p className="text-gray-700 dark:text-gray-300 mb-4">{item.description}</p>
                 {friendAvatars.length > 0 && (
