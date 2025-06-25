@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
-:root {
+:root, html {
   --background: #ffffff;
   --foreground: #171717;
+  /* Dialog overlay scrim color */
+  --dialog-scrim-bg: rgba(0,0,0,0.8);
 }
 
 @theme inline {

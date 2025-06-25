@@ -74,7 +74,7 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
   const selectedContent = isEditMode ? reviewToEdit : contentDatabase.find(c => c.id === selectedContentId);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+    <div className="fixed inset-0 z-50 flex justify-center items-center" style={{ background: 'var(--dialog-scrim-bg)' }}>
       <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-md relative">
         <div className="h-2 rounded-t-2xl bg-pink-600 w-full" />
         <div className="p-8">
