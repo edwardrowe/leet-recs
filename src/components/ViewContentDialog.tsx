@@ -70,7 +70,7 @@ const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, 
                     onClick={onAddToRatings}
                     className="px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700 shadow"
                   >
-                    Add to Ratings
+                    Rate This
                   </button>
                 )}
               </div>
