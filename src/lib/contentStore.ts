@@ -1,5 +1,3 @@
-// import { Content } from "@/components/AddReviewDialog";
-
 export type ContentType = 'movie' | 'tv-show' | 'book' | 'video-game';
 
 let contentList: Content[] = [

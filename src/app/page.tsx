@@ -16,28 +16,21 @@ import { getReviews, addOrUpdateReview, deleteReview } from "@/lib/reviewStore";
 import { FaFilm, FaTv, FaBook, FaGamepad } from "react-icons/fa";
 import Image from "next/image";
 
-// This is the shape of a review that has been saved
-// Note: The `Review` type is now imported from AddReviewDialog
-// to ensure it's consistent across components.
-
-// This is our fake "database" of all possible content
-// const contentDatabase: Content[] = [
-//   { id: "1", title: "Inception", type: "movie", description: "A mind-bending thriller about dreaming within dreams.", thumbnailUrl: "https://picsum.photos/seed/inception/400/300" },
-//   { id: "2", title: "Fleabag", type: "tv-show", description: "A hilarious and heartbreaking look at a young woman's life in London.", thumbnailUrl: "https://picsum.photos/seed/fleabag/400/300" },
-//   { id: "3", title: "Project Hail Mary", type: "book", description: "A lone astronaut must save the Earth from a mysterious threat.", thumbnailUrl: "https://picsum.photos/seed/project-hail-mary/400/300" },
-//   { id: "4", title: "The Office", type: "tv-show", description: "A mockumentary about the everyday lives of office employees.", thumbnailUrl: "https://picsum.photos/seed/the-office/400/300" },
-//   { id: "5", title: "Dune", type: "book", description: "A sci-fi epic about a young nobleman's destiny on a desert planet.", thumbnailUrl: "https://picsum.photos/seed/dune/400/300" },
-//   { id: "6", title: "The Matrix", type: "movie", description: "A hacker discovers the shocking truth about his reality.", thumbnailUrl: "https://picsum.photos/seed/the-matrix/400/300" },
-// ];
-
-// No longer needed: initialReviews are now in reviewStore
-
 function ReviewRow({ review, onEdit }: { review: ReviewWithUser; onEdit: () => void }) {
-  let icon;
-  if (review.type === "movie") icon = <FaFilm className="text-2xl text-pink-600" />;
-  else if (review.type === "tv-show") icon = <FaTv className="text-2xl text-pink-600" />;
-  else if (review.type === "video-game") icon = <FaGamepad className="text-2xl text-pink-600" />;
-  else icon = <FaBook className="text-2xl text-pink-600" />;
+  const getContentIcon = (type: string) => {
+    switch (type) {
+      case "movie":
+        return <FaFilm className="text-2xl text-pink-600" />;
+      case "tv-show":
+        return <FaTv className="text-2xl text-pink-600" />;
+      case "video-game":
+        return <FaGamepad className="text-2xl text-pink-600" />;
+      default:
+        return <FaBook className="text-2xl text-pink-600" />;
+    }
+  };
+  
+  const icon = getContentIcon(review.type);
   return (
     <div className="flex items-center border-b border-gray-200 dark:border-gray-700 py-4 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={onEdit}>
       {review.thumbnailUrl && (
