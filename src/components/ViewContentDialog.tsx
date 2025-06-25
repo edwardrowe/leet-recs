@@ -1,0 +1,100 @@
+import React, { useEffect } from "react";
+import Image from "next/image";
+import { Content } from "@/lib/contentStore";
+import { ReviewWithContent } from "@/lib/reviewStore";
+import { getPeople, CURRENT_USER_ID } from "@/lib/peopleStore";
+
+interface ViewContentDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  content: Content | null;
+  reviews: ReviewWithContent[];
+  onEdit: () => void;
+  onAddToRatings: () => void;
+  canAddToRatings: boolean;
+}
+
+const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, content, reviews, onEdit, onAddToRatings, canAddToRatings }) => {
+  // Add Escape key handler
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !content) return null;
+
+  // Get people map for fast lookup
+  const people = getPeople();
+  const getName = (userId: string) =>
+    userId === CURRENT_USER_ID ? "Me" : (people.find(p => p.id === userId)?.name || userId);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+      <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-2xl relative">
+        <div className="h-2 rounded-t-2xl bg-cyan-600 w-full" />
+        <div className="p-8">
+          <div className="flex flex-col md:flex-row gap-6">
+            {content.thumbnailUrl && (
+              <div className="relative w-full md:w-48 h-48 rounded-lg overflow-hidden flex-shrink-0">
+                <Image src={content.thumbnailUrl} alt={content.title} fill className="object-cover" />
+              </div>
+            )}
+            <div className="flex-1">
+              <h2 className="text-3xl font-bold mb-2">{content.title}</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{content.type}</p>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">{content.description}</p>
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={onEdit}
+                  className="px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700 shadow"
+                >
+                  Edit
+                </button>
+                {canAddToRatings && (
+                  <button
+                    onClick={onAddToRatings}
+                    className="px-4 py-2 rounded-md bg-cyan-100 text-cyan-800 font-medium hover:bg-cyan-200 shadow"
+                  >
+                    Add to Ratings
+                  </button>
+                )}
+                <button
+                  onClick={onClose}
+                  className="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-300 dark:hover:bg-gray-600 shadow"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8">
+            <h3 className="text-xl font-semibold mb-4">All Ratings</h3>
+            {reviews.length === 0 ? (
+              <div className="text-gray-500 dark:text-gray-400">No one has rated this yet.</div>
+            ) : (
+              <div className="space-y-4 max-h-64 overflow-y-auto pr-2">
+                {reviews.map((review, idx) => (
+                  <div key={review.userId + '-' + idx} className="border-b border-gray-200 dark:border-gray-700 pb-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-gray-800 dark:text-gray-200">{getName(review.userId)}</span>
+                      <span className="ml-2 inline-block bg-cyan-600 text-white rounded-full px-3 py-1 font-bold text-lg">{review.rating}</span>
+                    </div>
+                    {review.personalNotes && (
+                      <div className="text-sm text-gray-600 dark:text-gray-400 italic">{review.personalNotes}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ViewContentDialog; 

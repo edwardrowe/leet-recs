@@ -14,7 +14,12 @@ type ReviewCardProps = {
 
 const ReviewCard: React.FC<ReviewCardProps> = ({ title, description, rating, type, personalNotes, thumbnailUrl, onEdit }) => {
   return (
-    <div className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden">
+    <div
+      className={
+        `border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden transition-colors ${onEdit ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700' : ''}`
+      }
+      onClick={onEdit}
+    >
       {thumbnailUrl && (
         <div className="relative h-48 w-full">
           <Image
@@ -40,18 +45,6 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ title, description, rating, typ
         <div className="flex items-center mt-auto">
           <span className="font-bold text-lg">{rating}</span>
           <span className="text-gray-500 dark:text-gray-400">/10</span>
-          {onEdit && (
-            <button 
-              onClick={onEdit} 
-              className="ml-auto p-2 rounded-full text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              aria-label="Edit review"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
-              </svg>
-            </button>
-          )}
         </div>
       </div>
     </div>

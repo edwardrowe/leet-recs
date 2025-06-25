@@ -13,6 +13,7 @@ import { getPeople, CURRENT_USER_ID } from "@/lib/peopleStore";
 import { getReviewsByContentId } from "@/lib/reviewStore";
 import ConfirmationDialog from '@/components/ConfirmationDialog';
 import SortPicker, { SortOption } from "@/components/SortPicker";
+import ViewContentDialog from "@/components/ViewContentDialog";
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
@@ -29,6 +30,8 @@ export default function ContentPage() {
   const [editContent, setEditContent] = useState<Content | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [pendingDeleteContent, setPendingDeleteContent] = useState<Content | null>(null);
+  const [viewContent, setViewContent] = useState<Content | null>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
   const handleAddContent = (data: NewContentData) => {
     // For now, default to 'movie' type and generate a new id
@@ -177,8 +180,16 @@ export default function ContentPage() {
               return person ? { id: person.id, name: person.name, avatarUrl: person.avatarUrl } : undefined;
             })
             .filter((f): f is { id: string; name: string; avatarUrl: string } => Boolean(f));
+          const canAddToRatings = !reviewedIds.has(item.id);
           return (
-            <div key={item.id} className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden relative">
+            <div
+              key={item.id}
+              className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden relative cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              onClick={() => {
+                setViewContent(item);
+                setIsViewDialogOpen(true);
+              }}
+            >
               {/* Average rating display */}
               <div className="absolute top-4 left-4 z-10 flex items-center">
                 {avgRating !== null && (
@@ -209,25 +220,6 @@ export default function ContentPage() {
                     ))}
                   </div>
                 )}
-                {!reviewedIds.has(item.id) && (
-                  <button
-                    className="mt-auto px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700 cursor-pointer"
-                    onClick={() => {
-                      setReviewContent(item);
-                      setReviewDialogOpen(true);
-                    }}
-                  >
-                    Add to Ratings
-                  </button>
-                )}
-                {/* Edit button */}
-                <button
-                  className="absolute top-2 right-2 px-2 py-1 text-xs rounded bg-cyan-600 text-white hover:bg-cyan-700"
-                  onClick={() => setEditContent(item)}
-                  aria-label="Edit Item"
-                >
-                  Edit
-                </button>
               </div>
             </div>
           );
@@ -263,6 +255,22 @@ export default function ContentPage() {
           setConfirmDeleteOpen(true);
         }}
         color="cyan"
+      />
+      <ViewContentDialog
+        isOpen={isViewDialogOpen}
+        onClose={() => setIsViewDialogOpen(false)}
+        content={viewContent}
+        reviews={viewContent ? getReviewsWithContentByContentId(viewContent.id) : []}
+        onEdit={() => {
+          setEditContent(viewContent);
+          setIsViewDialogOpen(false);
+        }}
+        onAddToRatings={() => {
+          setReviewContent(viewContent);
+          setReviewDialogOpen(true);
+          setIsViewDialogOpen(false);
+        }}
+        canAddToRatings={viewContent ? !reviewedIds.has(viewContent.id) : false}
       />
       <ConfirmationDialog
         isOpen={!!pendingDeleteContent}
