@@ -12,11 +12,13 @@ import { getReviews, addOrUpdateReview, getReviewsWithContentByContentId } from 
 import { getPeople, CURRENT_USER_ID } from "@/lib/peopleStore";
 import { getReviewsByContentId } from "@/lib/reviewStore";
 import ConfirmationDialog from '@/components/ConfirmationDialog';
+import SortPicker, { SortOption } from "@/components/SortPicker";
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState<'all' | ContentType>('all');
+  const [sortBy, setSortBy] = useState<'title' | 'avgRating'>('title');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [search, setSearch] = useState('');
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
@@ -42,6 +44,12 @@ export default function ContentPage() {
     setContentList(getContentList()); // Trigger re-render
   };
 
+  // Sorting options for the picker
+  const sortOptions: SortOption[] = [
+    { value: 'title', label: 'Title' },
+    { value: 'avgRating', label: 'Average rating' },
+  ];
+
   // Filtering and sorting logic
   const filteredSortedContent = contentList
     .filter(item => {
@@ -54,8 +62,19 @@ export default function ContentPage() {
       );
     })
     .sort((a, b) => {
-      const cmp = a.title.localeCompare(b.title);
-      return sortDirection === 'asc' ? cmp : -cmp;
+      const direction = sortDirection === 'asc' ? 1 : -1;
+      if (sortBy === 'title') {
+        return a.title.localeCompare(b.title) * direction;
+      }
+      if (sortBy === 'avgRating') {
+        const aReviews = getReviewsWithContentByContentId(a.id);
+        const bReviews = getReviewsWithContentByContentId(b.id);
+        const aAvg = aReviews.length > 0 ? aReviews.reduce((sum, r) => sum + r.rating, 0) / aReviews.length : 0;
+        const bAvg = bReviews.length > 0 ? bReviews.reduce((sum, r) => sum + r.rating, 0) / bReviews.length : 0;
+        if (aAvg === bAvg) return a.title.localeCompare(b.title) * direction;
+        return (aAvg - bAvg) * direction;
+      }
+      return 0;
     });
 
   const handleReviewedFilterChange = (val: 'all' | 'reviewed' | 'not-reviewed') => setReviewedFilter(val);
@@ -118,7 +137,7 @@ export default function ContentPage() {
             Not Reviewed
           </button>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4">
           <input
             type="text"
             placeholder="Search..."
@@ -126,7 +145,12 @@ export default function ContentPage() {
             onChange={e => setSearch(e.target.value)}
             className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
           />
-          <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">Sorted by Title</span>
+          <label htmlFor="sort" className="text-sm font-medium">Sort by:</label>
+          <SortPicker
+            options={sortOptions}
+            value={sortBy}
+            onChange={val => setSortBy(val as 'title' | 'avgRating')}
+          />
           <button
             onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
             className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"

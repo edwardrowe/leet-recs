@@ -16,6 +16,7 @@ import { getReviews, addOrUpdateReview, deleteReview, getReviewsWithContentByUse
 import { FaFilm, FaTv, FaBook, FaGamepad } from "react-icons/fa";
 import Image from "next/image";
 import FriendPicker from "@/components/FriendPicker";
+import SortPicker, { SortOption } from "@/components/SortPicker";
 
 function ReviewRow({ review, onEdit, canEdit }: { review: ReviewWithContent; onEdit: () => void; canEdit: boolean }) {
   const getContentIcon = (type: string) => {
@@ -178,6 +179,11 @@ export default function Home() {
     content => !reviews.some(review => review.id === content.id)
   ) : [];
 
+  const sortOptions: SortOption[] = [
+    { value: 'rating', label: 'Rating' },
+    { value: 'title', label: 'Title' },
+  ];
+
   return (
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
       <NavBar />
@@ -211,15 +217,11 @@ export default function Home() {
             className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
           />
           <label htmlFor="sort" className="text-sm font-medium">Sort by:</label>
-          <select
-            id="sort"
+          <SortPicker
+            options={sortOptions}
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'rating' | 'title')}
-            className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-          >
-            <option value="rating">Rating</option>
-            <option value="title">Title</option>
-          </select>
+            onChange={val => setSortBy(val as 'rating' | 'title')}
+          />
           <button
             onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
             className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
