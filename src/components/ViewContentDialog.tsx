@@ -42,6 +42,22 @@ const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, 
     <div className="fixed inset-0 z-50 flex justify-center items-center" style={{ background: 'var(--dialog-scrim-bg)' }}>
       <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-2xl relative">
         <div className="h-2 rounded-t-2xl bg-cyan-600 w-full" />
+        <div className="absolute top-4 right-4 flex gap-2 z-10">
+          <button
+            onClick={onEdit}
+            className="px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700 shadow"
+            aria-label="Edit"
+          >
+            Edit
+          </button>
+          <button
+            onClick={onClose}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 shadow text-xl"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </div>
         <div className="p-8">
           <div className="flex flex-col md:flex-row gap-6">
             {content.thumbnailUrl && (
@@ -53,27 +69,15 @@ const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, 
               <h2 className="text-3xl font-bold mb-2">{content.title}</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{content.type}</p>
               <p className="text-gray-700 dark:text-gray-300 mb-4">{content.description}</p>
-              <div className="flex gap-2 mt-4">
-                <button
-                  onClick={onEdit}
-                  className="px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700 shadow"
-                >
-                  Edit
-                </button>
+              <div className="flex gap-2 mt-4 justify-end">
                 {canAddToRatings && (
                   <button
                     onClick={onAddToRatings}
-                    className="px-4 py-2 rounded-md bg-cyan-100 text-cyan-800 font-medium hover:bg-cyan-200 shadow"
+                    className="px-4 py-2 rounded-md bg-cyan-600 text-white font-medium hover:bg-cyan-700 shadow"
                   >
                     Add to Ratings
                   </button>
                 )}
-                <button
-                  onClick={onClose}
-                  className="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-300 dark:hover:bg-gray-600 shadow"
-                >
-                  Close
-                </button>
               </div>
             </div>
           </div>
