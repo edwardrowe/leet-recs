@@ -76,7 +76,7 @@ export default function Home() {
   const [reviews, setReviews] = useState<ReviewWithContent[]>(getReviewsWithContentByUserId(CURRENT_USER_ID));
   const [filter, setFilter] = useState<'all' | ContentType>('all');
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<'rating' | 'title'>('rating');
+  const [sortBy, setSortBy] = useState<'rating' | 'title' | 'lastReviewed'>('rating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [reviewToEdit, setReviewToEdit] = useState<ReviewWithContent | null>(null);
@@ -168,6 +168,11 @@ export default function Home() {
         const direction = sortDirection === 'asc' ? 1 : -1;
         return a.title.localeCompare(b.title) * direction;
       }
+      if (sortBy === 'lastReviewed') {
+        const direction = sortDirection === 'asc' ? 1 : -1;
+        if (a.timestamp === b.timestamp) return a.title.localeCompare(b.title) * direction;
+        return (a.timestamp - b.timestamp) * direction;
+      }
       return 0;
     });
 
@@ -196,6 +201,7 @@ export default function Home() {
   const sortOptions: SortOption[] = [
     { value: 'rating', label: 'Rating' },
     { value: 'title', label: 'Title' },
+    { value: 'lastReviewed', label: 'Last Reviewed' },
   ];
 
   return (
@@ -234,7 +240,7 @@ export default function Home() {
           <SortPicker
             options={sortOptions}
             value={sortBy}
-            onChange={val => setSortBy(val as 'rating' | 'title')}
+            onChange={val => setSortBy(val as 'rating' | 'title' | 'lastReviewed')}
           />
           <button
             onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
