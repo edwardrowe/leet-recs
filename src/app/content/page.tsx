@@ -8,7 +8,7 @@ import Fab from "@/components/Fab";
 import { getContentList, addContent, updateContent, deleteContent, ContentType } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import AddReviewDialog, { NewReviewData } from "@/components/AddReviewDialog";
-import { getReviews, addOrUpdateReview } from "@/lib/reviewStore";
+import { getReviews, addOrUpdateReview, getReviewsWithContentByContentId } from "@/lib/reviewStore";
 import { getPeople, CURRENT_USER_ID } from "@/lib/peopleStore";
 import { getReviewsByContentId } from "@/lib/reviewStore";
 import ConfirmationDialog from '@/components/ConfirmationDialog';
@@ -63,7 +63,7 @@ export default function ContentPage() {
   const handleSaveReview = (data: NewReviewData) => {
     if (!reviewContent) return;
     const newReview = {
-      ...reviewContent,
+      id: reviewContent.id,
       rating: data.rating,
       personalNotes: data.personalNotes,
       userId: CURRENT_USER_ID,
@@ -139,7 +139,7 @@ export default function ContentPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
         {filteredSortedContent.map((item) => {
           // Find reviews for this content
-          const reviews = getReviewsByContentId(item.id);
+          const reviews = getReviewsWithContentByContentId(item.id);
           // Get followed friends
           const people = getPeople();
           const followedFriends = people.filter(p => p.followed && p.id !== 'me');

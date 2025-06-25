@@ -1,3 +1,5 @@
+import { getReviews, addOrUpdateReview, deleteReview } from "./reviewStore";
+
 export type ContentType = 'movie' | 'tv-show' | 'book' | 'video-game';
 
 let contentList: Content[] = [

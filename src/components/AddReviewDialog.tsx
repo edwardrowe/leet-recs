@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Content, ContentType } from '@/lib/contentStore';
+import { ReviewWithContent } from '@/lib/reviewStore';
 
 // This is the shape of the data the dialog will return
 export type NewReviewData = {
@@ -10,11 +11,7 @@ export type NewReviewData = {
 };
 
 // The full review shape, needed for edit mode
-export type Review = Omit<Content, 'type'> & {
-  type: ContentType;
-  rating: number;
-  personalNotes?: string;
-};
+export type Review = ReviewWithContent;
 
 type AddReviewDialogProps = {
   isOpen: boolean;

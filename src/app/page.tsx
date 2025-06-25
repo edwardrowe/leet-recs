@@ -12,12 +12,12 @@ import NavBar from "@/components/NavBar";
 import { getContentList, ContentType, Content } from "@/lib/contentStore";
 import { CURRENT_USER_ID, getPeople } from "@/lib/peopleStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
-import { getReviews, addOrUpdateReview, deleteReview } from "@/lib/reviewStore";
+import { getReviews, addOrUpdateReview, deleteReview, getReviewsWithContentByUserId, ReviewWithContent } from "@/lib/reviewStore";
 import { FaFilm, FaTv, FaBook, FaGamepad } from "react-icons/fa";
 import Image from "next/image";
 import FriendPicker from "@/components/FriendPicker";
 
-function ReviewRow({ review, onEdit, canEdit }: { review: ReviewWithUser; onEdit: () => void; canEdit: boolean }) {
+function ReviewRow({ review, onEdit, canEdit }: { review: ReviewWithContent; onEdit: () => void; canEdit: boolean }) {
   const getContentIcon = (type: string) => {
     switch (type) {
       case "movie":
@@ -60,15 +60,15 @@ function ReviewRow({ review, onEdit, canEdit }: { review: ReviewWithUser; onEdit
 
 export default function Home() {
   const [selectedFriendId, setSelectedFriendId] = useState<string | null>(null);
-  const [reviews, setReviews] = useState<ReviewWithUser[]>(getReviews().filter(r => r.userId === CURRENT_USER_ID));
+  const [reviews, setReviews] = useState<ReviewWithContent[]>(getReviewsWithContentByUserId(CURRENT_USER_ID));
   const [filter, setFilter] = useState<'all' | ContentType>('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'title'>('rating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [reviewToEdit, setReviewToEdit] = useState<ReviewWithUser | null>(null);
+  const [reviewToEdit, setReviewToEdit] = useState<ReviewWithContent | null>(null);
   const [isConfirmDeleteDialogOpen, setIsConfirmDeleteDialogOpen] = useState(false);
-  const [reviewToDelete, setReviewToDelete] = useState<ReviewWithUser | null>(null);
+  const [reviewToDelete, setReviewToDelete] = useState<ReviewWithContent | null>(null);
   const [view, setView] = useState<'grid' | 'row'>('grid');
 
   const people = getPeople();
@@ -81,7 +81,7 @@ export default function Home() {
   // Update reviews when friend selection changes
   const updateReviews = () => {
     const targetUserId = selectedFriendId || CURRENT_USER_ID;
-    setReviews(getReviews().filter(r => r.userId === targetUserId));
+    setReviews(getReviewsWithContentByUserId(targetUserId));
   };
 
   // Update reviews whenever selectedFriendId changes
@@ -98,7 +98,7 @@ export default function Home() {
     setIsDialogOpen(true);
   };
 
-  const handleOpenEditDialog = (review: ReviewWithUser) => {
+  const handleOpenEditDialog = (review: ReviewWithContent) => {
     setReviewToEdit(review);
     setIsDialogOpen(true);
   };
@@ -126,11 +126,8 @@ export default function Home() {
   };
 
   const handleSaveReview = (newReviewData: NewReviewData) => {
-    const content = getContentList().find(c => c.id === newReviewData.contentId);
-    if (!content) return;
-
     const newReview: ReviewWithUser = {
-      ...content,
+      id: newReviewData.contentId,
       rating: newReviewData.rating,
       personalNotes: newReviewData.personalNotes,
       userId: CURRENT_USER_ID,
@@ -250,8 +247,8 @@ export default function Home() {
 
       {view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
-          {(filteredAndSortedReviews as ReviewWithUser[]).length > 0 ? (
-            (filteredAndSortedReviews as ReviewWithUser[]).map((review) => (
+          {(filteredAndSortedReviews as ReviewWithContent[]).length > 0 ? (
+            (filteredAndSortedReviews as ReviewWithContent[]).map((review) => (
               <ReviewCard
                 key={review.id}
                 title={review.title}
@@ -269,8 +266,8 @@ export default function Home() {
         </div>
       ) : (
         <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
-          {(filteredAndSortedReviews as ReviewWithUser[]).length > 0 ? (
-            (filteredAndSortedReviews as ReviewWithUser[]).map((review) => (
+          {(filteredAndSortedReviews as ReviewWithContent[]).length > 0 ? (
+            (filteredAndSortedReviews as ReviewWithContent[]).map((review) => (
               <ReviewRow key={review.id} review={review} onEdit={() => handleOpenEditDialog(review)} canEdit={canAddReviews} />
             ))
           ) : (
