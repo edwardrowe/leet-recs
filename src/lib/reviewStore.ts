@@ -64,6 +64,12 @@ let reviews: ReviewWithUser[] = [
     rating: 9,
     personalNotes: "Epic world-building."
   },
+  {
+    id: "6", // The Matrix
+    userId: "4",
+    rating: 8,
+    personalNotes: "Mind-bending action."
+  },
 ];
 
 export function getReviews() {

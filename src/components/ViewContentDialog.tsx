@@ -32,6 +32,12 @@ const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, 
   const getName = (userId: string) =>
     userId === CURRENT_USER_ID ? "Me" : (people.find(p => p.id === userId)?.name || userId);
 
+  // Sort reviews: current user first, then others
+  const sortedReviews = [
+    ...reviews.filter(r => r.userId === CURRENT_USER_ID),
+    ...reviews.filter(r => r.userId !== CURRENT_USER_ID),
+  ];
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
       <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-2xl relative">
@@ -73,20 +79,29 @@ const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, 
           </div>
           <div className="mt-8">
             <h3 className="text-xl font-semibold mb-4">All Ratings</h3>
-            {reviews.length === 0 ? (
+            {sortedReviews.length === 0 ? (
               <div className="text-gray-500 dark:text-gray-400">No one has rated this yet.</div>
             ) : (
               <div className="space-y-4 max-h-64 overflow-y-auto pr-2">
-                {reviews.map((review, idx) => (
-                  <div key={review.userId + '-' + idx} className="border-b border-gray-200 dark:border-gray-700 pb-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-gray-800 dark:text-gray-200">{getName(review.userId)}</span>
-                      <span className="ml-2 inline-block bg-cyan-600 text-white rounded-full px-3 py-1 font-bold text-lg">{review.rating}</span>
-                    </div>
-                    {review.personalNotes && (
-                      <div className="text-sm text-gray-600 dark:text-gray-400 italic">{review.personalNotes}</div>
+                {sortedReviews.map((review, idx) => (
+                  <React.Fragment key={review.userId + '-' + idx}>
+                    {idx === 1 && (
+                      <div className="flex items-center my-2">
+                        <div className="flex-grow h-px bg-gradient-to-r from-cyan-400 via-cyan-200 to-transparent dark:from-cyan-700 dark:via-cyan-900 dark:to-transparent" />
+                        <span className="mx-2 text-cyan-400 dark:text-cyan-600 text-xs font-bold tracking-widest">OTHERS</span>
+                        <div className="flex-grow h-px bg-gradient-to-l from-cyan-400 via-cyan-200 to-transparent dark:from-cyan-700 dark:via-cyan-900 dark:to-transparent" />
+                      </div>
                     )}
-                  </div>
+                    <div className={`pb-3 ${idx !== sortedReviews.length - 1 && idx !== 0 ? 'border-b border-gray-200 dark:border-gray-700' : ''}`}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`font-semibold ${review.userId === CURRENT_USER_ID ? 'text-cyan-800 dark:text-cyan-200' : 'text-gray-800 dark:text-gray-200'}`}>{review.userId === CURRENT_USER_ID ? 'Me (You)' : getName(review.userId)}</span>
+                        <span className="ml-2 inline-block bg-cyan-600 text-white rounded-full px-3 py-1 font-bold text-lg">{review.rating}</span>
+                      </div>
+                      {review.personalNotes && (
+                        <div className={`text-sm italic ${review.userId === CURRENT_USER_ID ? 'text-cyan-900 dark:text-cyan-100' : 'text-gray-600 dark:text-gray-400'}`}>{review.personalNotes}</div>
+                      )}
+                    </div>
+                  </React.Fragment>
                 ))}
               </div>
             )}
