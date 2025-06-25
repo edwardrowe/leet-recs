@@ -17,6 +17,7 @@ import { FaFilm, FaTv, FaBook, FaGamepad } from "react-icons/fa";
 import Image from "next/image";
 import FriendPicker from "@/components/FriendPicker";
 import SortPicker, { SortOption } from "@/components/SortPicker";
+import ContentTypeToggleGroup, { allContentTypes } from '@/components/ContentTypeToggleGroup';
 
 function formatReviewDate(timestamp: number): string {
   const now = Date.now();
@@ -74,7 +75,7 @@ function ReviewRow({ review, onEdit, canEdit }: { review: ReviewWithContent; onE
 export default function Home() {
   const [selectedFriendId, setSelectedFriendId] = useState<string | null>(null);
   const [reviews, setReviews] = useState<ReviewWithContent[]>(getReviewsWithContentByUserId(CURRENT_USER_ID));
-  const [filter, setFilter] = useState<'all' | ContentType>('all');
+  const [enabledTypes, setEnabledTypes] = useState<ContentType[]>(allContentTypes);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'title' | 'lastReviewed'>('rating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -152,7 +153,7 @@ export default function Home() {
 
   const filteredAndSortedReviews = reviews
     .filter(review =>
-      (filter === 'all' || review.type === filter) &&
+      enabledTypes.includes(review.type) &&
       (review.title.toLowerCase().includes(search.toLowerCase()) ||
         review.description.toLowerCase().includes(search.toLowerCase()))
     )
@@ -178,15 +179,15 @@ export default function Home() {
 
   const getEmptyStateMessage = () => {
     const personName = selectedFriend ? selectedFriend.name : 'You';
-    if (filter === 'all' && reviews.length === 0) {
+    if (reviews.length === 0) {
       return selectedFriend 
         ? `${personName} hasn't added any reviews yet.`
         : "You haven't added any reviews yet. Click the '+' to get started!";
     }
     let typeName;
-    if (filter === 'tv-show') typeName = 'TV shows';
-    else if (filter === 'video-game') typeName = 'Video games';
-    else typeName = `${filter}s`;
+    if (reviews[0].type === 'tv-show') typeName = 'TV shows';
+    else if (reviews[0].type === 'video-game') typeName = 'Video games';
+    else typeName = `${reviews[0].type}s`;
     return `No ${typeName} found in ${personName.toLowerCase()}'s reviews.`;
   };
 
@@ -221,12 +222,7 @@ export default function Home() {
 
       <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
         <div className="flex flex-row items-center gap-2">
-          {/* Content type filter */}
-          <button onClick={() => setFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>All</button>
-          <button onClick={() => setFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'movie' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>Movies</button>
-          <button onClick={() => setFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'tv-show' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>TV Shows</button>
-          <button onClick={() => setFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'book' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>Books</button>
-          <button onClick={() => setFilter('video-game')} className={`px-4 py-2 rounded-full text-sm font-medium ${filter === 'video-game' ? 'bg-pink-600 hover:bg-pink-700 text-white cursor-pointer' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer'}`}>Video Games</button>
+          <ContentTypeToggleGroup enabledTypes={enabledTypes} setEnabledTypes={setEnabledTypes} />
         </div>
         <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4">
           <input

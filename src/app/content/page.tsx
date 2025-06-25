@@ -14,11 +14,12 @@ import { getReviewsByContentId } from "@/lib/reviewStore";
 import ConfirmationDialog from '@/components/ConfirmationDialog';
 import SortPicker, { SortOption } from "@/components/SortPicker";
 import ViewContentDialog from "@/components/ViewContentDialog";
+import ContentTypeToggleGroup, { allContentTypes } from '@/components/ContentTypeToggleGroup';
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [typeFilter, setTypeFilter] = useState<'all' | ContentType>('all');
+  const [enabledTypes, setEnabledTypes] = useState<ContentType[]>(allContentTypes);
   const [sortBy, setSortBy] = useState<'title' | 'avgRating' | 'lastReviewed'>('avgRating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [search, setSearch] = useState('');
@@ -61,7 +62,7 @@ export default function ContentPage() {
       if (reviewedFilter === 'reviewed' && !reviewedIds.has(item.id)) return false;
       if (reviewedFilter === 'not-reviewed' && reviewedIds.has(item.id)) return false;
       return (
-        (typeFilter === 'all' || item.type === typeFilter) &&
+        enabledTypes.includes(item.type) &&
         (item.title.toLowerCase().includes(search.toLowerCase()) ||
           item.description.toLowerCase().includes(search.toLowerCase()))
       );
@@ -130,34 +131,7 @@ export default function ContentPage() {
       <h1 className="text-4xl font-bold mb-8">Discover</h1>
       <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
         <div className="flex flex-row items-center gap-2">
-          {/* Content type filter */}
-          <button onClick={() => setTypeFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'all' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>All</button>
-          <button onClick={() => setTypeFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'movie' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>Movies</button>
-          <button onClick={() => setTypeFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'tv-show' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>TV Shows</button>
-          <button onClick={() => setTypeFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'book' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>Books</button>
-          <button onClick={() => setTypeFilter('video-game')} className={`px-4 py-2 rounded-full text-sm font-medium ${typeFilter === 'video-game' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}>Video Games</button>
-          {/* Vertical divider */}
-          <span className="h-6 border-l border-gray-300 dark:border-gray-600 mx-3" />
-          {/* Show filter */}
-          <label className="font-medium">Show:</label>
-          <button
-            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'all' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}
-            onClick={() => handleReviewedFilterChange('all')}
-          >
-            All
-          </button>
-          <button
-            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'reviewed' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}
-            onClick={() => handleReviewedFilterChange('reviewed')}
-          >
-            Reviewed
-          </button>
-          <button
-            className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'not-reviewed' ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600'} cursor-pointer`}
-            onClick={() => handleReviewedFilterChange('not-reviewed')}
-          >
-            Not Reviewed
-          </button>
+          <ContentTypeToggleGroup enabledTypes={enabledTypes} setEnabledTypes={setEnabledTypes} />
         </div>
         <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4">
           <input
