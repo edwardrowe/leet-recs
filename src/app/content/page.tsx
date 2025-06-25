@@ -8,7 +8,7 @@ import Fab from "@/components/Fab";
 import { getContentList, addContent, updateContent, deleteContent, ContentType } from "@/lib/contentStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import AddReviewDialog, { NewReviewData } from "@/components/AddReviewDialog";
-import { getReviews, addOrUpdateReview, getReviewsWithContentByContentId } from "@/lib/reviewStore";
+import { getReviews, addOrUpdateReview, getReviewsWithContentByContentId, ReviewWithContent } from "@/lib/reviewStore";
 import { getPeople, CURRENT_USER_ID } from "@/lib/peopleStore";
 import { getReviewsByContentId } from "@/lib/reviewStore";
 import ConfirmationDialog from '@/components/ConfirmationDialog';
@@ -32,6 +32,7 @@ export default function ContentPage() {
   const [pendingDeleteContent, setPendingDeleteContent] = useState<Content | null>(null);
   const [viewContent, setViewContent] = useState<Content | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [editReview, setEditReview] = useState<ReviewWithContent | null>(null);
 
   const handleAddContent = (data: NewContentData) => {
     // For now, default to 'movie' type and generate a new id
@@ -104,6 +105,7 @@ export default function ContentPage() {
     addOrUpdateReview(newReview);
     setForceUpdate(x => x + 1); // force re-render
     setReviewDialogOpen(false);
+    setEditReview(null);
   };
 
   const handleConfirmDelete = () => {
@@ -254,10 +256,10 @@ export default function ContentPage() {
       />
       <AddReviewDialog
         isOpen={reviewDialogOpen}
-        onClose={() => setReviewDialogOpen(false)}
+        onClose={() => { setReviewDialogOpen(false); setEditReview(null); }}
         onSave={handleSaveReview}
         contentDatabase={reviewContent ? [reviewContent] : []}
-        reviewToEdit={null}
+        reviewToEdit={editReview}
       />
       <AddContentDialog
         isOpen={!!editContent}
@@ -282,11 +284,16 @@ export default function ContentPage() {
         content={viewContent}
         reviews={viewContent ? getReviewsWithContentByContentId(viewContent.id) : []}
         onEdit={() => {
-          setEditContent(viewContent);
+          if (!viewContent) return;
+          const myReview = getReviewsWithContentByContentId(viewContent.id).find(r => r.userId === CURRENT_USER_ID);
+          setReviewContent(viewContent);
+          setEditReview(myReview || null);
+          setReviewDialogOpen(true);
           setIsViewDialogOpen(false);
         }}
         onAddToRatings={() => {
           setReviewContent(viewContent);
+          setEditReview(null);
           setReviewDialogOpen(true);
           setIsViewDialogOpen(false);
         }}
