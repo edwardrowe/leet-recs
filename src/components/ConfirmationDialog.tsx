@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import CloseButton from './CloseButton';
 
 type ConfirmationDialogProps = {
   isOpen: boolean;
@@ -23,13 +24,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onClose
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center" style={{ background: 'var(--dialog-scrim-bg)' }}>
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-sm relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 shadow text-xl z-10"
-          aria-label="Close"
-        >
-          &times;
-        </button>
+        <CloseButton onClick={onClose} className="absolute top-4 right-4" />
         <h2 className="text-xl font-bold mb-4">{title}</h2>
         <p className="text-gray-600 dark:text-gray-300 mb-6">{message}</p>
         <div className="flex justify-end gap-4">

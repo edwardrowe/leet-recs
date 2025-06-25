@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Content } from '@/lib/contentStore';
+import CloseButton from './CloseButton';
 
 export type NewContentData = {
   title: string;
@@ -89,13 +90,7 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
     <div className="fixed inset-0 z-50 flex justify-center items-center" style={{ background: 'var(--dialog-scrim-bg)' }}>
       <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-md relative">
         <div className={`h-2 rounded-t-2xl bg-${accent}-600 w-full`} />
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 shadow text-xl z-10"
-          aria-label="Close"
-        >
-          &times;
-        </button>
+        <CloseButton onClick={onClose} className="absolute top-4 right-4" />
         <div className="p-8">
           <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{contentToEdit ? 'Edit Item' : 'Add New Item'}</h2>
           <div className="space-y-6">

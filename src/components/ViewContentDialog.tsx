@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Content } from "@/lib/contentStore";
 import { ReviewWithContent } from "@/lib/reviewStore";
 import { getPeople, CURRENT_USER_ID } from "@/lib/peopleStore";
+import CloseButton from './CloseButton';
 
 interface ViewContentDialogProps {
   isOpen: boolean;
@@ -50,13 +51,7 @@ const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, 
           >
             Edit
           </button>
-          <button
-            onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 shadow text-xl"
-            aria-label="Close"
-          >
-            &times;
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
         <div className="p-8">
           <div className="flex flex-col md:flex-row gap-6">
