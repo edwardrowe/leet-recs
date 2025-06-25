@@ -140,6 +140,8 @@ export default function ContentPage() {
         {filteredSortedContent.map((item) => {
           // Find reviews for this content
           const reviews = getReviewsWithContentByContentId(item.id);
+          // Calculate average rating
+          const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : null;
           // Get followed friends
           const people = getPeople();
           const followedFriends = people.filter(p => p.followed && p.id !== 'me');
@@ -153,6 +155,12 @@ export default function ContentPage() {
             .filter((f): f is { id: string; name: string; avatarUrl: string } => Boolean(f));
           return (
             <div key={item.id} className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden relative">
+              {/* Average rating display */}
+              <div className="absolute top-4 left-4 z-10 flex items-center">
+                {avgRating !== null && (
+                  <span className="text-4xl font-extrabold text-cyan-600 bg-white dark:bg-gray-900 rounded-full px-4 py-1 shadow border-2 border-cyan-200 dark:border-cyan-800">{avgRating}</span>
+                )}
+              </div>
               {item.thumbnailUrl && (
                 <div className="relative h-48 w-full">
                   <Image
