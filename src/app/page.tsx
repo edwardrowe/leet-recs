@@ -187,7 +187,7 @@ export default function Home() {
       <header className="w-full max-w-6xl flex justify-between items-center">
         <div className="flex items-center gap-4">
           <h1 className="text-5xl font-bold">
-            {selectedFriend ? `${selectedFriend.name}'s Recs` : 'My Recs'}
+            {selectedFriend ? `${selectedFriend.name}'s Ratings` : 'Ratings'}
           </h1>
           <FriendPicker 
             selectedFriendId={selectedFriendId} 

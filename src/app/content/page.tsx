@@ -73,10 +73,20 @@ export default function ContentPage() {
     setReviewDialogOpen(false);
   };
 
+  const handleConfirmDelete = () => {
+    if (pendingDeleteContent) {
+      deleteContent(pendingDeleteContent.id);
+      setContentList(getContentList());
+      setEditContent(null);
+    }
+    setPendingDeleteContent(null);
+    setConfirmDeleteOpen(false);
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
       <NavBar />
-      <h1 className="text-4xl font-bold mb-8">All Content</h1>
+      <h1 className="text-4xl font-bold mb-8">Discover</h1>
       <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
         <div className="flex flex-row items-center gap-2">
           {/* Content type filter */}
@@ -175,14 +185,14 @@ export default function ContentPage() {
                       setReviewDialogOpen(true);
                     }}
                   >
-                    Add to My Recs
+                    Add to Ratings
                   </button>
                 )}
                 {/* Edit button */}
                 <button
                   className="absolute top-2 right-2 px-2 py-1 text-xs rounded bg-cyan-600 text-white hover:bg-cyan-700"
                   onClick={() => setEditContent(item)}
-                  aria-label="Edit Content"
+                  aria-label="Edit Item"
                 >
                   Edit
                 </button>
@@ -223,18 +233,10 @@ export default function ContentPage() {
         color="cyan"
       />
       <ConfirmationDialog
-        isOpen={confirmDeleteOpen}
-        onClose={() => setConfirmDeleteOpen(false)}
-        onConfirm={() => {
-          if (pendingDeleteContent) {
-            deleteContent(pendingDeleteContent.id);
-            setContentList(getContentList());
-            setEditContent(null);
-          }
-          setPendingDeleteContent(null);
-          setConfirmDeleteOpen(false);
-        }}
-        title="Delete Content"
+        isOpen={!!pendingDeleteContent}
+        onClose={() => setPendingDeleteContent(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Item"
         message={`Are you sure you want to delete "${pendingDeleteContent?.title}"? This action cannot be undone.`}
       />
     </main>

@@ -52,7 +52,7 @@ export default function FriendPicker({ selectedFriendId, onFriendSelect }: Frien
             <div className="relative w-8 h-8 rounded-full overflow-hidden">
               <Image src="https://picsum.photos/seed/elrowe-avatar/200" alt="Elrowe" fill className="object-cover" />
             </div>
-            <span className="font-medium">My Recs</span>
+            <span className="font-medium">My Ratings</span>
           </>
         )}
         <svg
@@ -77,7 +77,7 @@ export default function FriendPicker({ selectedFriendId, onFriendSelect }: Frien
               <div className="relative w-8 h-8 rounded-full overflow-hidden">
                 <Image src="https://picsum.photos/seed/elrowe-avatar/200" alt="Elrowe" fill className="object-cover" />
               </div>
-              <span className="font-medium">My Recs</span>
+              <span className="font-medium">My Ratings</span>
             </button>
             
             {followedFriends.length > 0 && (

@@ -90,7 +90,7 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
       <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-md relative">
         <div className={`h-2 rounded-t-2xl bg-${accent}-600 w-full`} />
         <div className="p-8">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{contentToEdit ? 'Edit Content' : 'Add New Content'}</h2>
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{contentToEdit ? 'Edit Item' : 'Add New Item'}</h2>
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
