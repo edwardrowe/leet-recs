@@ -17,6 +17,7 @@ import ContentCard from "@/components/ContentCard";
 import ContentRow from "@/components/ContentRow";
 import FriendPicker from "@/components/FriendPicker";
 import SortPicker, { SortOption } from "@/components/SortPicker";
+import { FaSortAmountDownAlt, FaSortAmountUpAlt } from 'react-icons/fa';
 
 function formatReviewDate(timestamp: number): string {
   const now = Date.now();
@@ -190,10 +191,16 @@ export default function Home() {
           />
           <button
             onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-            className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-            aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
+            className="ml-2 p-2 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Toggle sort direction"
+            title={`Sort ${sortDirection === 'asc' ? 'Ascending' : 'Descending'}`}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            {sortDirection === 'asc' ? '↑' : '↓'}
+            {sortDirection === 'asc' ? (
+              <FaSortAmountUpAlt className="w-4 h-4" />
+            ) : (
+              <FaSortAmountDownAlt className="w-4 h-4" />
+            )}
           </button>
           {/* View toggle */}
           <button

@@ -15,7 +15,7 @@ import { getReviewsByContentId } from "@/lib/reviewStore";
 import ConfirmationDialog from '@/components/ConfirmationDialog';
 import SortPicker, { SortOption } from "@/components/SortPicker";
 import ViewContentDialog from "@/components/ViewContentDialog";
-import { FaFilm, FaTv, FaBook, FaGamepad } from 'react-icons/fa';
+import { FaFilm, FaTv, FaBook, FaGamepad, FaSortAmountDownAlt, FaSortAmountUpAlt } from 'react-icons/fa';
 import ContentTypeIcon from '@/components/ContentTypeIcon';
 import ContentCard from "@/components/ContentCard";
 import ContentRow from "@/components/ContentRow";
@@ -155,6 +155,19 @@ export default function ContentPage() {
             value={sortBy}
             onChange={val => setSortBy(val as 'title' | 'avgRating' | 'lastReviewed')}
           />
+          <button
+            onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
+            className="ml-2 p-2 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Toggle sort direction"
+            title={`Sort ${sortDirection === 'asc' ? 'Ascending' : 'Descending'}`}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            {sortDirection === 'asc' ? (
+              <FaSortAmountUpAlt className="w-4 h-4" />
+            ) : (
+              <FaSortAmountDownAlt className="w-4 h-4" />
+            )}
+          </button>
           {/* View toggle */}
           <button
             className={`ml-4 px-3 py-2 rounded-md text-sm font-medium border ${view === 'grid' ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-gray-800 text-primary border-primary'}`}
