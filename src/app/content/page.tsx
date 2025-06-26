@@ -289,10 +289,7 @@ export default function ContentPage() {
         reviews={viewContent ? getReviewsWithContentByContentId(viewContent.id) : []}
         onEdit={() => {
           if (!viewContent) return;
-          const myReview = getReviewsWithContentByContentId(viewContent.id).find(r => r.userId === CURRENT_USER_ID);
-          setReviewContent(viewContent);
-          setEditReview(myReview || null);
-          setReviewDialogOpen(true);
+          setEditContent(viewContent);
           setIsViewDialogOpen(false);
         }}
         onAddToRatings={() => {
