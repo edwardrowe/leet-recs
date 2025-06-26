@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Content } from "@/lib/contentStore";
-import AddContentDialog, { NewContentData } from "@/components/AddContentDialog";
+import AddContentDialog, { NewContentData, ImportCSVButton } from "@/components/AddContentDialog";
 import NavBar from "@/components/NavBar";
 import Image from "next/image";
 import Fab from "@/components/Fab";
@@ -39,6 +39,9 @@ export default function ContentPage() {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [editReview, setEditReview] = useState<ReviewWithContent | null>(null);
   const [view, setView] = useState<'grid' | 'list'>('grid');
+
+  // Determine if any dialog is open
+  const anyDialogOpen = isDialogOpen || reviewDialogOpen || !!editContent || isViewDialogOpen || !!pendingDeleteContent;
 
   const handleAddContent = (data: NewContentData) => {
     // For now, default to 'movie' type and generate a new id
@@ -244,7 +247,13 @@ export default function ContentPage() {
           })}
         </div>
       )}
-      <Fab onClick={() => setIsDialogOpen(true)} color="primary" />
+      {/* Floating Action Buttons */}
+      {!anyDialogOpen && (
+        <div style={{ position: 'fixed', bottom: 32, right: 32, display: 'flex', flexDirection: 'column', gap: 16, zIndex: 100 }}>
+          <ImportCSVButton onImport={() => setContentList(getContentList())} />
+          <Fab onClick={() => setIsDialogOpen(true)} />
+        </div>
+      )}
       <AddContentDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

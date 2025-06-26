@@ -18,6 +18,21 @@ interface ContentCardProps {
   className?: string;
 }
 
+// Sanitize thumbnailUrl for next/image
+function getSafeImageUrl(url?: string): string | null {
+  if (!url) return null;
+  let clean = url.trim();
+  // Remove wrapping parentheses
+  if (clean.startsWith('(') && clean.endsWith(')')) {
+    clean = clean.slice(1, -1).trim();
+  }
+  // Only allow absolute URLs or relative URLs starting with '/'
+  if (/^(https?:\/\/|\/)/.test(clean)) {
+    return clean;
+  }
+  return null;
+}
+
 const ContentCard: React.FC<ContentCardProps> = ({
   title,
   description,
@@ -49,10 +64,10 @@ const ContentCard: React.FC<ContentCardProps> = ({
         </div>
       )}
       
-      {thumbnailUrl && (
+      {thumbnailUrl && getSafeImageUrl(thumbnailUrl) && (
         <div className="relative h-48 w-full">
           <Image
-            src={thumbnailUrl}
+            src={getSafeImageUrl(thumbnailUrl)!}
             alt={`Thumbnail for ${title}`}
             fill
             className="object-cover"

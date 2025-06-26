@@ -1,7 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Content } from '@/lib/contentStore';
+import { Content, importContent, ContentType } from '@/lib/contentStore';
 import CloseButton from './CloseButton';
+import { FiUpload } from 'react-icons/fi';
+import { parseCSV } from '../lib/csvImport';
 
 export type NewContentData = {
   title: string;
@@ -191,5 +193,38 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
     </div>
   );
 };
+
+export function ImportCSVButton({ onImport }: { onImport?: () => void }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    const items = parseCSV(text);
+    importContent(items);
+    if (onImport) onImport();
+    alert(`${items.length} items imported!`);
+    e.target.value = "";
+  };
+  return (
+    <>
+      <button
+        onClick={() => fileInputRef.current?.click()}
+        className="w-16 h-16 rounded-full shadow-lg text-white font-bold text-2xl flex items-center justify-center transition-colors duration-200 focus:outline-none focus:ring-4 bg-primary hover:bg-primary-hover focus:ring-primary"
+        aria-label="Import from CSV"
+        style={{ margin: 0 }}
+      >
+        <FiUpload size={32} />
+      </button>
+      <input
+        type="file"
+        accept=".csv"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+      />
+    </>
+  );
+}
 
 export default AddContentDialog; 

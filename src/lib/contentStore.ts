@@ -42,6 +42,14 @@ export function setLastReviewed(contentId: string, timestamp: number) {
   contentList = contentList.map(c => c.id === contentId ? { ...c, lastReviewed: timestamp } : c);
 }
 
+// Utility to import multiple content items at once
+export function importContent(items: Content[]) {
+  const existingIds = new Set(contentList.map(c => c.id));
+  const newItems = items.filter(item => !existingIds.has(item.id));
+  newItems.forEach(addContent);
+  return newItems.length; // Return the number of items actually imported
+}
+
 // This is the shape of the content in our "database"
 export type Content = {
   id: string;

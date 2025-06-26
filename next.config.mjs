@@ -10,6 +10,7 @@ const nextConfig = {
     domains: [
       "picsum.photos",
       "randomuser.me",
+      "v5.airtableusercontent.com",
     ],
   },
 };
