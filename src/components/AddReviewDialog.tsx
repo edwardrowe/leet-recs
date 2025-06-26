@@ -88,6 +88,7 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
                 alt={`Thumbnail for ${selectedContent.title}`}
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, 400px"
               />
             </div>
           )}

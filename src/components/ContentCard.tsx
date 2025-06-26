@@ -56,6 +56,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
             alt={`Thumbnail for ${title}`}
             fill
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, 400px"
           />
         </div>
       )}
@@ -92,7 +93,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
             <span className="text-xs text-gray-500 dark:text-gray-400">Reviewed by:</span>
             {friendAvatars.map(f => (
               <div key={f.id} className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-primary" title={f.name}>
-                <Image src={f.avatarUrl} alt={f.name} fill className="object-cover" />
+                <Image src={f.avatarUrl} alt={f.name} fill className="object-cover" sizes="28px" />
               </div>
             ))}
           </div>

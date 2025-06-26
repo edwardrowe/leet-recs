@@ -43,14 +43,14 @@ export default function FriendPicker({ selectedFriendId, onFriendSelect }: Frien
         {selectedFriend ? (
           <>
             <div className="relative w-8 h-8 rounded-full overflow-hidden">
-              <Image src={selectedFriend.avatarUrl} alt={selectedFriend.name} fill className="object-cover" />
+              <Image src={selectedFriend.avatarUrl} alt={selectedFriend.name} fill className="object-cover" sizes="32px" />
             </div>
             <span className="font-medium">{selectedFriend.name}</span>
           </>
         ) : (
           <>
             <div className="relative w-8 h-8 rounded-full overflow-hidden">
-              <Image src="https://picsum.photos/seed/elrowe-avatar/200" alt="Elrowe" fill className="object-cover" />
+              <Image src="https://picsum.photos/seed/elrowe-avatar/200" alt="Elrowe" fill className="object-cover" sizes="32px" />
             </div>
             <span className="font-medium">My Ratings</span>
           </>
@@ -75,7 +75,7 @@ export default function FriendPicker({ selectedFriendId, onFriendSelect }: Frien
               }`}
             >
               <div className="relative w-8 h-8 rounded-full overflow-hidden">
-                <Image src="https://picsum.photos/seed/elrowe-avatar/200" alt="Elrowe" fill className="object-cover" />
+                <Image src="https://picsum.photos/seed/elrowe-avatar/200" alt="Elrowe" fill className="object-cover" sizes="32px" />
               </div>
               <span className="font-medium">My Ratings</span>
             </button>
@@ -92,7 +92,7 @@ export default function FriendPicker({ selectedFriendId, onFriendSelect }: Frien
                     }`}
                   >
                     <div className="relative w-8 h-8 rounded-full overflow-hidden">
-                      <Image src={friend.avatarUrl} alt={friend.name} fill className="object-cover" />
+                      <Image src={friend.avatarUrl} alt={friend.name} fill className="object-cover" sizes="32px" />
                     </div>
                     <span className="font-medium">{friend.name}</span>
                   </button>

@@ -39,7 +39,7 @@ export default function FriendsPage() {
           filteredPeople.map(person => (
             <div key={person.id} className="flex items-center gap-4 p-4">
               <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                <Image src={person.avatarUrl} alt={person.name} fill className="object-cover" />
+                <Image src={person.avatarUrl} alt={person.name} fill className="object-cover" sizes="48px" />
               </div>
               <div className="flex-1 font-medium text-lg">{person.name}</div>
               {person.followed ? (
