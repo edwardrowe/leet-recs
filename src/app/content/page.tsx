@@ -5,7 +5,8 @@ import AddContentDialog, { NewContentData } from "@/components/AddContentDialog"
 import NavBar from "@/components/NavBar";
 import Image from "next/image";
 import Fab from "@/components/Fab";
-import { getContentList, addContent, updateContent, deleteContent, ContentType } from "@/lib/contentStore";
+import { getContentList, addContent, updateContent, deleteContent } from "@/lib/contentStore";
+import type { ContentType } from '@/components/ContentFilterBar';
 import ContentFilterBar from "@/components/ContentFilterBar";
 import AddReviewDialog, { NewReviewData } from "@/components/AddReviewDialog";
 import { getReviews, addOrUpdateReview, getReviewsWithContentByContentId, ReviewWithContent } from "@/lib/reviewStore";
@@ -14,7 +15,6 @@ import { getReviewsByContentId } from "@/lib/reviewStore";
 import ConfirmationDialog from '@/components/ConfirmationDialog';
 import SortPicker, { SortOption } from "@/components/SortPicker";
 import ViewContentDialog from "@/components/ViewContentDialog";
-import ContentTypeToggleGroup, { allContentTypes } from '@/components/ContentTypeToggleGroup';
 import { FaFilm, FaTv, FaBook, FaGamepad } from 'react-icons/fa';
 import ContentTypeIcon from '@/components/ContentTypeIcon';
 import ContentCard from "@/components/ContentCard";
@@ -23,7 +23,7 @@ import ContentRow from "@/components/ContentRow";
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [enabledTypes, setEnabledTypes] = useState<ContentType[]>(allContentTypes);
+  const [enabledTypes, setEnabledTypes] = useState<ContentType[]>(['all']);
   const [sortBy, setSortBy] = useState<'title' | 'avgRating' | 'lastReviewed'>('avgRating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [search, setSearch] = useState('');
@@ -67,7 +67,7 @@ export default function ContentPage() {
       if (reviewedFilter === 'reviewed' && !reviewedIds.has(item.id)) return false;
       if (reviewedFilter === 'not-reviewed' && reviewedIds.has(item.id)) return false;
       return (
-        enabledTypes.includes(item.type) &&
+        (enabledTypes.includes('all') || enabledTypes.includes(item.type)) &&
         (item.title.toLowerCase().includes(search.toLowerCase()) ||
           item.description.toLowerCase().includes(search.toLowerCase()))
       );
@@ -136,7 +136,7 @@ export default function ContentPage() {
       <h1 className="text-4xl font-bold mb-8">Discover</h1>
       <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
         <div className="flex flex-row items-center gap-2">
-          <ContentTypeToggleGroup enabledTypes={enabledTypes} setEnabledTypes={setEnabledTypes} />
+          <ContentFilterBar enabledTypes={enabledTypes} setEnabledTypes={setEnabledTypes} search={search} setSearch={setSearch} sortDirection={sortDirection} setSortDirection={setSortDirection} />
         </div>
         <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4">
           <input
@@ -152,13 +152,6 @@ export default function ContentPage() {
             value={sortBy}
             onChange={val => setSortBy(val as 'title' | 'avgRating' | 'lastReviewed')}
           />
-          <button
-            onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-            className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
-            aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
-          >
-            {sortDirection === 'asc' ? '↑' : '↓'}
-          </button>
           {/* View toggle */}
           <button
             className={`ml-4 px-3 py-2 rounded-md text-sm font-medium border ${view === 'grid' ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-gray-800 text-primary border-primary'}`}

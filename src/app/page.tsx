@@ -8,7 +8,8 @@ import UserProfile from "@/components/UserProfile";
 import EmptyState from "@/components/EmptyState";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import NavBar from "@/components/NavBar";
-import { getContentList, ContentType, Content } from "@/lib/contentStore";
+import { getContentList, Content } from "@/lib/contentStore";
+import type { ContentType } from '@/components/ContentFilterBar';
 import { CURRENT_USER_ID, getPeople } from "@/lib/peopleStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import { getReviews, addOrUpdateReview, deleteReview, getReviewsWithContentByUserId, ReviewWithContent } from "@/lib/reviewStore";
@@ -16,7 +17,6 @@ import ContentCard from "@/components/ContentCard";
 import ContentRow from "@/components/ContentRow";
 import FriendPicker from "@/components/FriendPicker";
 import SortPicker, { SortOption } from "@/components/SortPicker";
-import ContentTypeToggleGroup, { allContentTypes } from '@/components/ContentTypeToggleGroup';
 
 function formatReviewDate(timestamp: number): string {
   const now = Date.now();
@@ -32,7 +32,7 @@ function formatReviewDate(timestamp: number): string {
 export default function Home() {
   const [selectedFriendId, setSelectedFriendId] = useState<string | null>(null);
   const [reviews, setReviews] = useState<ReviewWithContent[]>(getReviewsWithContentByUserId(CURRENT_USER_ID));
-  const [enabledTypes, setEnabledTypes] = useState<ContentType[]>(allContentTypes);
+  const [enabledTypes, setEnabledTypes] = useState<ContentType[]>(['all']);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'title' | 'lastReviewed'>('rating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -110,7 +110,7 @@ export default function Home() {
 
   const filteredAndSortedReviews = reviews
     .filter(review =>
-      enabledTypes.includes(review.type) &&
+      (enabledTypes.includes('all') || enabledTypes.includes(review.type)) &&
       (review.title.toLowerCase().includes(search.toLowerCase()) ||
         review.description.toLowerCase().includes(search.toLowerCase()))
     )
@@ -179,16 +179,9 @@ export default function Home() {
 
       <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
         <div className="flex flex-row items-center gap-2">
-          <ContentTypeToggleGroup enabledTypes={enabledTypes} setEnabledTypes={setEnabledTypes} />
+          <ContentFilterBar enabledTypes={enabledTypes} setEnabledTypes={setEnabledTypes} search={search} setSearch={setSearch} sortDirection={sortDirection} setSortDirection={setSortDirection} />
         </div>
         <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-          />
           <label htmlFor="sort" className="text-sm font-medium">Sort by:</label>
           <SortPicker
             options={sortOptions}

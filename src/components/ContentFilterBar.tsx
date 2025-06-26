@@ -1,6 +1,8 @@
 import React from "react";
+import type { ContentType as LibContentType } from '@/lib/contentStore';
+import ContentTypeIcon from './ContentTypeIcon';
 
-export type ContentType = 'all' | 'movie' | 'tv-show' | 'book';
+export type ContentType = LibContentType | 'all';
 
 interface ContentFilterBarProps {
   enabledTypes: ContentType[];
@@ -28,25 +30,18 @@ const ContentFilterBar: React.FC<ContentFilterBarProps> = ({
   return (
     <div className={`w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 ${className}`}>
       <div className="flex gap-2 flex-wrap justify-center">
-        <button onClick={() => setEnabledTypes(['all'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes.includes('all'))}`}>All</button>
-        <button onClick={() => setEnabledTypes(['movie'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes.includes('movie'))}`}>Movies</button>
-        <button onClick={() => setEnabledTypes(['tv-show'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes.includes('tv-show'))}`}>TV Shows</button>
-        <button onClick={() => setEnabledTypes(['book'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes.includes('book'))}`}>Books</button>
-      </div>
-      <div className="flex items-center gap-2">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-        />
-        <button
-          onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-          className="px-3 py-2 border rounded-md text-lg font-mono bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
-          aria-label={`Sort in ${sortDirection === 'asc' ? 'descending' : 'ascending'} order`}
-        >
-          {sortDirection === 'asc' ? '↑' : '↓'}
+        <button onClick={() => setEnabledTypes(['all'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes[0] === 'all')}`}>All Content</button>
+        <button onClick={() => setEnabledTypes(['movie'])} className={`px-4 py-2 rounded-full text-sm font-medium flex items-center justify-center ${selectedClass(enabledTypes[0] === 'movie')}`} aria-label="Movies">
+          <ContentTypeIcon type="movie" className="w-5 h-5" />
+        </button>
+        <button onClick={() => setEnabledTypes(['tv-show'])} className={`px-4 py-2 rounded-full text-sm font-medium flex items-center justify-center ${selectedClass(enabledTypes[0] === 'tv-show')}`} aria-label="TV Shows">
+          <ContentTypeIcon type="tv-show" className="w-5 h-5" />
+        </button>
+        <button onClick={() => setEnabledTypes(['book'])} className={`px-4 py-2 rounded-full text-sm font-medium flex items-center justify-center ${selectedClass(enabledTypes[0] === 'book')}`} aria-label="Books">
+          <ContentTypeIcon type="book" className="w-5 h-5" />
+        </button>
+        <button onClick={() => setEnabledTypes(['video-game'])} className={`px-4 py-2 rounded-full text-sm font-medium flex items-center justify-center ${selectedClass(enabledTypes[0] === 'video-game')}`} aria-label="Games">
+          <ContentTypeIcon type="video-game" className="w-5 h-5" />
         </button>
       </div>
     </div>
