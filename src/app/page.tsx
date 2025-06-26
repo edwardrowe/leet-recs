@@ -1,6 +1,5 @@
 "use client";
 
-import ReviewCard from "@/components/ReviewCard";
 import React, { useState } from "react";
 import AddReviewDialog, { NewReviewData, Review } from "@/components/AddReviewDialog";
 import { ReviewWithUser } from "@/lib/reviewStore";
@@ -13,8 +12,8 @@ import { getContentList, ContentType, Content } from "@/lib/contentStore";
 import { CURRENT_USER_ID, getPeople } from "@/lib/peopleStore";
 import ContentFilterBar from "@/components/ContentFilterBar";
 import { getReviews, addOrUpdateReview, deleteReview, getReviewsWithContentByUserId, ReviewWithContent } from "@/lib/reviewStore";
-import { FaFilm, FaTv, FaBook, FaGamepad } from "react-icons/fa";
-import Image from "next/image";
+import ContentCard from "@/components/ContentCard";
+import ContentRow from "@/components/ContentRow";
 import FriendPicker from "@/components/FriendPicker";
 import SortPicker, { SortOption } from "@/components/SortPicker";
 import ContentTypeToggleGroup, { allContentTypes } from '@/components/ContentTypeToggleGroup';
@@ -28,48 +27,6 @@ function formatReviewDate(timestamp: number): string {
   if (days < 7) return `Reviewed ${days} days ago`;
   const date = new Date(timestamp);
   return `Reviewed on ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
-}
-
-function ReviewRow({ review, onEdit, canEdit }: { review: ReviewWithContent; onEdit: () => void; canEdit: boolean }) {
-  const getContentIcon = (type: string) => {
-    switch (type) {
-      case "movie":
-        return <FaFilm className="text-2xl text-pink-600" />;
-      case "tv-show":
-        return <FaTv className="text-2xl text-pink-600" />;
-      case "video-game":
-        return <FaGamepad className="text-2xl text-pink-600" />;
-      default:
-        return <FaBook className="text-2xl text-pink-600" />;
-    }
-  };
-  
-  const icon = getContentIcon(review.type);
-  return (
-    <div className={`flex items-center border-b border-gray-200 dark:border-gray-700 py-4 px-2 ${canEdit ? 'hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer' : ''}`} onClick={canEdit ? onEdit : undefined}>
-      {review.thumbnailUrl && (
-        <div className="relative w-10 h-10 rounded-lg overflow-hidden mr-4 flex-shrink-0">
-          <Image src={review.thumbnailUrl} alt={review.title} fill className="object-cover" />
-        </div>
-      )}
-      <div className="mr-4 flex-shrink-0">{icon}</div>
-      <div className="flex-1 min-w-0">
-        <div className="font-semibold text-lg truncate">{review.title}</div>
-        <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">{review.description}</div>
-        <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">{formatReviewDate(review.timestamp)}</div>
-      </div>
-      <div className="flex flex-row items-center gap-2 min-w-[120px] justify-end ml-2">
-        {review.personalNotes && (
-          <div className="text-xs text-gray-500 dark:text-gray-400 text-right max-w-xs truncate" title={review.personalNotes}>
-            <span className="font-semibold text-gray-400 dark:text-gray-500">Notes:</span> {review.personalNotes}
-          </div>
-        )}
-        <div className="text-right min-w-[48px]">
-          <span className="inline-block bg-pink-600 text-white rounded-full px-3 py-1 font-bold text-lg">{review.rating}</span>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 export default function Home() {
@@ -267,7 +224,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
           {(filteredAndSortedReviews as ReviewWithContent[]).length > 0 ? (
             (filteredAndSortedReviews as ReviewWithContent[]).map((review) => (
-              <ReviewCard
+              <ContentCard
                 key={review.id}
                 title={review.title}
                 description={review.description}
@@ -275,8 +232,8 @@ export default function Home() {
                 type={review.type}
                 personalNotes={review.personalNotes}
                 thumbnailUrl={review.thumbnailUrl}
-                onEdit={canAddReviews ? () => handleOpenEditDialog(review) : undefined}
                 reviewedDate={formatReviewDate(review.timestamp)}
+                onClick={canAddReviews ? () => handleOpenEditDialog(review) : undefined}
               />
             ))
           ) : (
@@ -287,7 +244,18 @@ export default function Home() {
         <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
           {(filteredAndSortedReviews as ReviewWithContent[]).length > 0 ? (
             (filteredAndSortedReviews as ReviewWithContent[]).map((review) => (
-              <ReviewRow key={review.id} review={review} onEdit={() => handleOpenEditDialog(review)} canEdit={canAddReviews} />
+              <ContentRow 
+                key={review.id} 
+                title={review.title}
+                description={review.description}
+                rating={review.rating}
+                type={review.type}
+                personalNotes={review.personalNotes}
+                thumbnailUrl={review.thumbnailUrl}
+                reviewedDate={formatReviewDate(review.timestamp)}
+                onClick={() => handleOpenEditDialog(review)} 
+                canEdit={canAddReviews} 
+              />
             ))
           ) : (
             <EmptyState message={getEmptyStateMessage()} />

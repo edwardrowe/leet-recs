@@ -17,6 +17,8 @@ import ViewContentDialog from "@/components/ViewContentDialog";
 import ContentTypeToggleGroup, { allContentTypes } from '@/components/ContentTypeToggleGroup';
 import { FaFilm, FaTv, FaBook, FaGamepad } from 'react-icons/fa';
 import ContentTypeIcon from '@/components/ContentTypeIcon';
+import ContentCard from "@/components/ContentCard";
+import ContentRow from "@/components/ContentRow";
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
@@ -128,75 +130,6 @@ export default function ContentPage() {
     return `Last reviewed on ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
   }
 
-  function ContentRow({ item, onEdit, canEdit }: { item: Content; onEdit: () => void; canEdit: boolean }) {
-    const getContentIcon = (type: string) => {
-      switch (type) {
-        case "movie":
-          return <FaFilm className="text-2xl text-cyan-600" />;
-        case "tv-show":
-          return <FaTv className="text-2xl text-cyan-600" />;
-        case "video-game":
-          return <FaGamepad className="text-2xl text-cyan-600" />;
-        default:
-          return <FaBook className="text-2xl text-cyan-600" />;
-      }
-    };
-    
-    const icon = getContentIcon(item.type);
-    const reviews = getReviewsWithContentByContentId(item.id);
-    const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : null;
-    const people = getPeople();
-    const followedFriends = people.filter(p => p.followed && p.id !== 'me');
-    const friendReviewers = reviews.filter(r => followedFriends.some(f => f.id === r.userId));
-    const friendAvatars = friendReviewers
-      .map(r => {
-        const person = people.find(p => p.id === r.userId);
-        return person ? { id: person.id, name: person.name, avatarUrl: person.avatarUrl } : undefined;
-      })
-      .filter((f): f is { id: string; name: string; avatarUrl: string } => Boolean(f));
-    
-    return (
-      <div className={`flex items-center border-b border-gray-200 dark:border-gray-700 py-4 px-2 ${canEdit ? 'hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer' : ''}`} onClick={canEdit ? onEdit : undefined}>
-        {item.thumbnailUrl && (
-          <div className="relative w-10 h-10 rounded-lg overflow-hidden mr-4 flex-shrink-0">
-            <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" />
-          </div>
-        )}
-        <div className="mr-4 flex-shrink-0">{icon}</div>
-        <div className="flex-1 min-w-0">
-          <div className="font-semibold text-lg truncate">{item.title}</div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">{item.description}</div>
-          <div className="text-xs text-gray-400 dark:text-gray-500 mt-1 capitalize">{item.type}</div>
-          {item.lastReviewed && (
-            <div className="text-xs text-gray-400 dark:text-gray-500">{formatLastReviewedDate(item.lastReviewed)}</div>
-          )}
-        </div>
-        <div className="flex flex-row items-center gap-2 min-w-[120px] justify-end ml-2">
-          {friendAvatars.length > 0 && (
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-500 dark:text-gray-400">Reviewed by:</span>
-              {friendAvatars.slice(0, 3).map(f => (
-                <div key={f.id} className="relative w-6 h-6 rounded-full overflow-hidden border border-cyan-600" title={f.name}>
-                  <Image src={f.avatarUrl} alt={f.name} fill className="object-cover" />
-                </div>
-              ))}
-              {friendAvatars.length > 3 && (
-                <span className="text-xs text-gray-500 dark:text-gray-400">+{friendAvatars.length - 3}</span>
-              )}
-            </div>
-          )}
-          <div className="text-right min-w-[48px]">
-            {avgRating !== null ? (
-              <span className="inline-block bg-cyan-600 text-white rounded-full px-3 py-1 font-bold text-lg">{avgRating}</span>
-            ) : (
-              <span className="text-gray-400 dark:text-gray-500 text-sm">No ratings</span>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <main className="flex min-h-screen flex-col items-center p-12 space-y-8">
       <NavBar />
@@ -263,65 +196,59 @@ export default function ContentPage() {
               .filter((f): f is { id: string; name: string; avatarUrl: string } => Boolean(f));
             const canAddToRatings = !reviewedIds.has(item.id);
             return (
-              <div
-                key={item.id}
-                className="border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden relative cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              <ContentCard 
+                key={item.id} 
+                title={item.title}
+                description={item.description}
+                type={item.type}
+                thumbnailUrl={item.thumbnailUrl}
+                averageRating={avgRating ? parseFloat(avgRating) : undefined}
+                lastReviewed={item.lastReviewed ? formatLastReviewedDate(item.lastReviewed) : undefined}
+                friendAvatars={friendAvatars}
                 onClick={() => {
                   setViewContent(item);
                   setIsViewDialogOpen(true);
                 }}
-              >
-                {/* Average rating display */}
-                <div className="absolute top-4 left-4 z-10 flex flex-col items-start gap-1">
-                  {avgRating !== null && (
-                    <span className="text-4xl font-extrabold text-cyan-600 bg-white dark:bg-gray-900 rounded-full px-4 py-1 shadow border-2 border-cyan-200 dark:border-cyan-800">{avgRating}</span>
-                  )}
-                </div>
-                {item.thumbnailUrl && (
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src={item.thumbnailUrl}
-                      alt={`Thumbnail for ${item.title}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                <div className="p-4 flex flex-col flex-grow">
-                  <h2 className="text-2xl font-bold mb-1">{item.title}</h2>
-                  {item.lastReviewed && (
-                    <div className="text-xs text-gray-400 dark:text-gray-500 mb-1">{formatLastReviewedDate(item.lastReviewed)}</div>
-                  )}
-                  <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{item.type}</p>
-                  <p className="text-gray-700 dark:text-gray-300 mb-4">{item.description}</p>
-                  {friendAvatars.length > 0 && (
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">Reviewed by:</span>
-                      {friendAvatars.map(f => (
-                        <div key={f.id} className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-cyan-600" title={f.name}>
-                          <Image src={f.avatarUrl} alt={f.name} fill className="object-cover" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+              />
             );
           })}
         </div>
       ) : (
         <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
-          {filteredSortedContent.map((item) => (
-            <ContentRow 
-              key={item.id} 
-              item={item} 
-              onEdit={() => {
-                setViewContent(item);
-                setIsViewDialogOpen(true);
-              }} 
-              canEdit={true} 
-            />
-          ))}
+          {filteredSortedContent.map((item) => {
+            // Find reviews for this content
+            const reviews = getReviewsWithContentByContentId(item.id);
+            // Calculate average rating
+            const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : null;
+            // Get followed friends
+            const people = getPeople();
+            const followedFriends = people.filter(p => p.followed && p.id !== 'me');
+            // Find which followed friends reviewed this content
+            const friendReviewers = reviews.filter(r => followedFriends.some(f => f.id === r.userId));
+            const friendAvatars = friendReviewers
+              .map(r => {
+                const person = people.find(p => p.id === r.userId);
+                return person ? { id: person.id, name: person.name, avatarUrl: person.avatarUrl } : undefined;
+              })
+              .filter((f): f is { id: string; name: string; avatarUrl: string } => Boolean(f));
+            
+            return (
+              <ContentRow 
+                key={item.id} 
+                title={item.title}
+                description={item.description}
+                type={item.type}
+                thumbnailUrl={item.thumbnailUrl}
+                averageRating={avgRating ? parseFloat(avgRating) : undefined}
+                lastReviewed={item.lastReviewed ? formatLastReviewedDate(item.lastReviewed) : undefined}
+                friendAvatars={friendAvatars}
+                onClick={() => {
+                  setViewContent(item);
+                  setIsViewDialogOpen(true);
+                }}
+              />
+            );
+          })}
         </div>
       )}
       <Fab onClick={() => setIsDialogOpen(true)} color="cyan" />

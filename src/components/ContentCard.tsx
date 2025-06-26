@@ -1,0 +1,105 @@
+import React from 'react';
+import Image from 'next/image';
+import { ContentType } from '@/lib/contentStore';
+import ContentTypeIcon from './ContentTypeIcon';
+
+interface ContentCardProps {
+  title: string;
+  description: string;
+  type: ContentType;
+  thumbnailUrl?: string;
+  rating?: number; // For Ratings page (single user rating)
+  averageRating?: number; // For Discover page (average of all ratings)
+  personalNotes?: string; // For Ratings page
+  reviewedDate?: string; // For Ratings page
+  lastReviewed?: string; // For Discover page
+  friendAvatars?: Array<{ id: string; name: string; avatarUrl: string }>; // For Discover page
+  onClick?: () => void;
+  className?: string;
+}
+
+const ContentCard: React.FC<ContentCardProps> = ({
+  title,
+  description,
+  type,
+  thumbnailUrl,
+  rating,
+  averageRating,
+  personalNotes,
+  reviewedDate,
+  lastReviewed,
+  friendAvatars = [],
+  onClick,
+  className = ''
+}) => {
+  const displayRating = rating !== undefined ? rating : averageRating;
+  const showRating = displayRating !== undefined && displayRating !== null;
+
+  return (
+    <div
+      className={`border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden relative cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${className}`}
+      onClick={onClick}
+    >
+      {/* Rating display */}
+      {showRating && (
+        <div className="absolute top-4 left-4 z-10 flex flex-col items-start gap-1">
+          <span className="text-4xl font-extrabold text-cyan-600 bg-white dark:bg-gray-900 rounded-full px-4 py-1 shadow border-2 border-cyan-200 dark:border-cyan-800">
+            {displayRating}
+          </span>
+        </div>
+      )}
+      
+      {thumbnailUrl && (
+        <div className="relative h-48 w-full">
+          <Image
+            src={thumbnailUrl}
+            alt={`Thumbnail for ${title}`}
+            fill
+            className="object-cover"
+          />
+        </div>
+      )}
+      
+      <div className="p-4 flex flex-col flex-grow">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="min-w-[20px] min-h-[20px] flex items-center justify-center">
+            <ContentTypeIcon type={type} className="w-5 h-5 text-cyan-600" />
+          </span>
+          <h2 className="text-2xl font-bold truncate flex-1">{title}</h2>
+        </div>
+        
+        {/* Date display */}
+        {(reviewedDate || lastReviewed) && (
+          <div className="text-xs text-gray-400 dark:text-gray-500 mb-1">
+            {reviewedDate || lastReviewed}
+          </div>
+        )}
+        
+        <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{type}</p>
+        <p className="text-gray-700 dark:text-gray-300 mb-4">{description}</p>
+        
+        {/* Personal notes for Ratings page */}
+        {personalNotes && (
+          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
+            <h3 className="font-semibold text-md mb-1 text-gray-800 dark:text-gray-200">My Notes:</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 italic">{personalNotes}</p>
+          </div>
+        )}
+        
+        {/* Friend avatars for Discover page */}
+        {friendAvatars.length > 0 && (
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs text-gray-500 dark:text-gray-400">Reviewed by:</span>
+            {friendAvatars.map(f => (
+              <div key={f.id} className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-cyan-600" title={f.name}>
+                <Image src={f.avatarUrl} alt={f.name} fill className="object-cover" />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ContentCard; 
