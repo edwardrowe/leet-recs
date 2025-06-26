@@ -10,23 +10,22 @@ export type NewContentData = {
   type: 'movie' | 'tv-show' | 'book' | 'video-game';
 };
 
-type AddContentDialogProps = {
+interface AddContentDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: NewContentData) => void;
-  color?: 'pink' | 'cyan';
   contentToEdit?: Content | null;
   onDelete?: () => void;
-};
+}
 
-const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, onSave, color = 'pink', contentToEdit, onDelete }) => {
+const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, onSave, contentToEdit, onDelete }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
   const [type, setType] = useState<'movie' | 'tv-show' | 'book' | 'video-game'>('movie');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const accent = color === 'cyan' ? 'cyan' : 'pink';
+  const accent = 'primary';
 
   useEffect(() => {
     if (isOpen && contentToEdit) {
@@ -178,7 +177,7 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
             {contentToEdit && onDelete && (
               <button
                 onClick={onDelete}
-                className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 shadow mr-2"
+                className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-secondary hover:bg-secondary-hover shadow"
               >
                 Delete
               </button>

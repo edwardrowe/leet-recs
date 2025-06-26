@@ -3,35 +3,35 @@ import React from "react";
 export type ContentType = 'all' | 'movie' | 'tv-show' | 'book';
 
 interface ContentFilterBarProps {
-  typeFilter: ContentType;
-  setTypeFilter: (type: ContentType) => void;
+  enabledTypes: ContentType[];
+  setEnabledTypes: (types: ContentType[]) => void;
   search: string;
   setSearch: (s: string) => void;
   sortDirection: 'asc' | 'desc';
   setSortDirection: (d: 'asc' | 'desc') => void;
   className?: string;
-  color?: 'magenta' | 'cyan';
+  color?: 'cyan';
 }
 
 const ContentFilterBar: React.FC<ContentFilterBarProps> = ({
-  typeFilter,
-  setTypeFilter,
+  enabledTypes,
+  setEnabledTypes,
   search,
   setSearch,
   sortDirection,
   setSortDirection,
   className = '',
-  color = 'magenta',
+  color = 'cyan',
 }) => {
-  const accent = color === 'cyan' ? 'cyan' : 'pink';
+  const accent = 'cyan';
   const selectedClass = (active: boolean) => active ? `bg-${accent}-600 hover:bg-${accent}-700 text-white` : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600';
   return (
     <div className={`w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 ${className}`}>
       <div className="flex gap-2 flex-wrap justify-center">
-        <button onClick={() => setTypeFilter('all')} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(typeFilter === 'all')}`}>All</button>
-        <button onClick={() => setTypeFilter('movie')} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(typeFilter === 'movie')}`}>Movies</button>
-        <button onClick={() => setTypeFilter('tv-show')} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(typeFilter === 'tv-show')}`}>TV Shows</button>
-        <button onClick={() => setTypeFilter('book')} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(typeFilter === 'book')}`}>Books</button>
+        <button onClick={() => setEnabledTypes(['all'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes.includes('all'))}`}>All</button>
+        <button onClick={() => setEnabledTypes(['movie'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes.includes('movie'))}`}>Movies</button>
+        <button onClick={() => setEnabledTypes(['tv-show'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes.includes('tv-show'))}`}>TV Shows</button>
+        <button onClick={() => setEnabledTypes(['book'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes.includes('book'))}`}>Books</button>
       </div>
       <div className="flex items-center gap-2">
         <input

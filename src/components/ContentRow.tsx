@@ -49,7 +49,7 @@ const ContentRow: React.FC<ContentRowProps> = ({
       )}
       
       <div className="mr-4 flex-shrink-0">
-        <ContentTypeIcon type={type} className="text-2xl text-cyan-600" />
+        <ContentTypeIcon type={type} className="text-2xl text-primary" />
       </div>
       
       <div className="flex-1 min-w-0">
@@ -74,7 +74,7 @@ const ContentRow: React.FC<ContentRowProps> = ({
           <div className="flex items-center gap-1">
             <span className="text-xs text-gray-500 dark:text-gray-400">Reviewed by:</span>
             {friendAvatars.slice(0, 3).map(f => (
-              <div key={f.id} className="relative w-6 h-6 rounded-full overflow-hidden border border-cyan-600" title={f.name}>
+              <div key={f.id} className="relative w-6 h-6 rounded-full overflow-hidden border border-primary" title={f.name}>
                 <Image src={f.avatarUrl} alt={f.name} fill className="object-cover" />
               </div>
             ))}
@@ -87,7 +87,7 @@ const ContentRow: React.FC<ContentRowProps> = ({
         {/* Rating display */}
         <div className="text-right min-w-[48px]">
           {showRating ? (
-            <span className="inline-block bg-cyan-600 text-white rounded-full px-3 py-1 font-bold text-lg">{displayRating}</span>
+            <span className="inline-block bg-primary text-white rounded-full px-3 py-1 font-bold text-lg">{displayRating}</span>
           ) : (
             <span className="text-gray-400 dark:text-gray-500 text-sm">No ratings</span>
           )}

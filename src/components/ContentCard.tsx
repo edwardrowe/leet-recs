@@ -43,7 +43,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
       {/* Rating display */}
       {showRating && (
         <div className="absolute top-4 left-4 z-10 flex flex-col items-start gap-1">
-          <span className="text-4xl font-extrabold text-cyan-600 bg-white dark:bg-gray-900 rounded-full px-4 py-1 shadow border-2 border-cyan-200 dark:border-cyan-800">
+          <span className="text-4xl font-extrabold text-primary bg-white dark:bg-gray-900 rounded-full px-4 py-1 shadow border-2 border-primary-light dark:border-primary-dark">
             {displayRating}
           </span>
         </div>
@@ -63,7 +63,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex items-center gap-2 mb-1">
           <span className="min-w-[20px] min-h-[20px] flex items-center justify-center">
-            <ContentTypeIcon type={type} className="w-5 h-5 text-cyan-600" />
+            <ContentTypeIcon type={type} className="w-5 h-5 text-primary" />
           </span>
           <h2 className="text-2xl font-bold truncate flex-1">{title}</h2>
         </div>
@@ -91,7 +91,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs text-gray-500 dark:text-gray-400">Reviewed by:</span>
             {friendAvatars.map(f => (
-              <div key={f.id} className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-cyan-600" title={f.name}>
+              <div key={f.id} className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-primary" title={f.name}>
                 <Image src={f.avatarUrl} alt={f.name} fill className="object-cover" />
               </div>
             ))}

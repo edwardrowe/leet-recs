@@ -26,3 +26,112 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+:root {
+  --color-primary: #0891b2; /* cyan-600 */
+  --color-primary-hover: #0e7490; /* cyan-700 */
+  --color-primary-focus: #06b6d4; /* cyan-500 */
+  --color-primary-light: #e0f2fe; /* cyan-100 */
+  --color-primary-dark: #164e63; /* cyan-900 */
+  
+  --color-secondary: #dc2626; /* red-600 */
+  --color-secondary-hover: #b91c1c; /* red-700 */
+  --color-secondary-focus: #ef4444; /* red-500 */
+  --color-secondary-light: #fef2f2; /* red-100 */
+  --color-secondary-dark: #7f1d1d; /* red-900 */
+}
+
+.dark {
+  --color-primary: #0891b2; /* cyan-600 */
+  --color-primary-hover: #0e7490; /* cyan-700 */
+  --color-primary-focus: #06b6d4; /* cyan-500 */
+  --color-primary-light: #164e63; /* cyan-900 */
+  --color-primary-dark: #0c4a6e; /* cyan-800 */
+  
+  --color-secondary: #dc2626; /* red-600 */
+  --color-secondary-hover: #b91c1c; /* red-700 */
+  --color-secondary-focus: #ef4444; /* red-500 */
+  --color-secondary-light: #7f1d1d; /* red-900 */
+  --color-secondary-dark: #991b1b; /* red-800 */
+}
+
+/* Utility classes for color tokens */
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-primary-hover {
+  background-color: var(--color-primary-hover);
+}
+
+.bg-primary-light {
+  background-color: var(--color-primary-light);
+}
+
+.bg-primary-dark {
+  background-color: var(--color-primary-dark);
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
+}
+
+.bg-secondary-hover {
+  background-color: var(--color-secondary-hover);
+}
+
+.bg-secondary-light {
+  background-color: var(--color-secondary-light);
+}
+
+.bg-secondary-dark {
+  background-color: var(--color-secondary-dark);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.border-secondary {
+  border-color: var(--color-secondary);
+}
+
+.ring-primary {
+  --tw-ring-color: var(--color-primary-focus);
+}
+
+.ring-secondary {
+  --tw-ring-color: var(--color-secondary-focus);
+}
+
+.hover\:bg-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.hover\:bg-secondary:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+.focus\:ring-primary:focus {
+  --tw-ring-color: var(--color-primary-focus);
+}
+
+.focus\:ring-secondary:focus {
+  --tw-ring-color: var(--color-secondary-focus);
+}
+
+.focus\:border-primary:focus {
+  border-color: var(--color-primary-focus);
+}
+
+.focus\:border-secondary:focus {
+  border-color: var(--color-secondary-focus);
+}

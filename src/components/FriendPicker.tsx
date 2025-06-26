@@ -71,7 +71,7 @@ export default function FriendPicker({ selectedFriendId, onFriendSelect }: Frien
             <button
               onClick={() => handleFriendSelect(null)}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
-                selectedFriendId === null ? 'bg-pink-100 dark:bg-pink-900' : ''
+                selectedFriendId === null ? 'bg-primary-light dark:bg-primary-dark' : ''
               }`}
             >
               <div className="relative w-8 h-8 rounded-full overflow-hidden">
@@ -88,7 +88,7 @@ export default function FriendPicker({ selectedFriendId, onFriendSelect }: Frien
                     key={friend.id}
                     onClick={() => handleFriendSelect(friend.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
-                      selectedFriendId === friend.id ? 'bg-pink-100 dark:bg-pink-900' : ''
+                      selectedFriendId === friend.id ? 'bg-primary-light dark:bg-primary-dark' : ''
                     }`}
                   >
                     <div className="relative w-8 h-8 rounded-full overflow-hidden">

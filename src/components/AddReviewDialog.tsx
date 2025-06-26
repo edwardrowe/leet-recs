@@ -77,7 +77,7 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center" style={{ background: 'var(--dialog-scrim-bg)' }}>
       <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-md relative">
-        <div className="h-2 rounded-t-2xl bg-pink-600 w-full" />
+        <div className="h-2 rounded-t-2xl bg-primary w-full" />
         <CloseButton onClick={onClose} className="absolute top-4 right-4" />
         <div className="p-8">
           <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{isEditMode ? 'Edit Review' : 'Add a new review'}</h2>
@@ -109,7 +109,7 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
                   id="content"
                   value={selectedContentId}
                   onChange={(e) => setSelectedContentId(e.target.value)}
-                  className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 sm:text-sm rounded-lg bg-white dark:bg-gray-700 px-3`}
+                  className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm rounded-lg bg-white dark:bg-gray-700 px-3`}
                 >
                   <option value="" disabled>Select something to review...</option>
                   {contentDatabase.map(item => (
@@ -141,20 +141,20 @@ const AddReviewDialog: React.FC<AddReviewDialogProps> = ({ isOpen, onClose, onSa
                 rows={4}
                 value={personalNotes}
                 onChange={(e) => setPersonalNotes(e.target.value)}
-                className="mt-1 block w-full shadow-sm sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                className="mt-1 block w-full shadow-sm sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
           </div>
           <div className="mt-8 flex justify-between items-center">
             <div>
               {isEditMode && onDelete && (
-                <button onClick={onDelete} className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 shadow">
+                <button onClick={onDelete} className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-secondary hover:bg-secondary-hover shadow">
                   Delete Review
                 </button>
               )}
             </div>
             <div className="flex gap-4">
-              <button onClick={handleSave} className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-pink-600 hover:bg-pink-700 shadow">
+              <button onClick={handleSave} className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-hover shadow">
                 Save Review
               </button>
             </div>

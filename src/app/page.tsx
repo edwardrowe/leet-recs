@@ -204,18 +204,18 @@ export default function Home() {
           </button>
           {/* View toggle */}
           <button
-            className={`ml-4 px-3 py-2 rounded-md text-sm font-medium border ${view === 'grid' ? 'bg-pink-600 text-white border-pink-600' : 'bg-white dark:bg-gray-800 text-pink-600 border-pink-600'}`}
+            className={`ml-4 px-3 py-2 rounded-md text-sm font-medium border ${view === 'grid' ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-gray-800 text-primary border-primary'}`}
             onClick={() => setView('grid')}
             aria-label="Grid view"
           >
             Grid
           </button>
           <button
-            className={`px-3 py-2 rounded-md text-sm font-medium border ${view === 'row' ? 'bg-pink-600 text-white border-pink-600' : 'bg-white dark:bg-gray-800 text-pink-600 border-pink-600'}`}
+            className={`px-3 py-2 rounded-md text-sm font-medium border ${view === 'row' ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-gray-800 text-primary border-primary'}`}
             onClick={() => setView('row')}
             aria-label="Row view"
           >
-            List
+            Row
           </button>
         </div>
       </div>
@@ -263,7 +263,7 @@ export default function Home() {
         </div>
       )}
       
-      {canAddReviews && <Fab onClick={handleOpenAddDialog} />}
+      {canAddReviews && <Fab onClick={handleOpenAddDialog} color="primary" />}
 
       <AddReviewDialog
         isOpen={isDialogOpen}

@@ -161,14 +161,14 @@ export default function ContentPage() {
           </button>
           {/* View toggle */}
           <button
-            className={`ml-4 px-3 py-2 rounded-md text-sm font-medium border ${view === 'grid' ? 'bg-cyan-600 text-white border-cyan-600' : 'bg-white dark:bg-gray-800 text-cyan-600 border-cyan-600'}`}
+            className={`ml-4 px-3 py-2 rounded-md text-sm font-medium border ${view === 'grid' ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-gray-800 text-primary border-primary'}`}
             onClick={() => setView('grid')}
             aria-label="Grid view"
           >
             Grid
           </button>
           <button
-            className={`px-3 py-2 rounded-md text-sm font-medium border ${view === 'list' ? 'bg-cyan-600 text-white border-cyan-600' : 'bg-white dark:bg-gray-800 text-cyan-600 border-cyan-600'}`}
+            className={`px-3 py-2 rounded-md text-sm font-medium border ${view === 'list' ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-gray-800 text-primary border-primary'}`}
             onClick={() => setView('list')}
             aria-label="List view"
           >
@@ -251,12 +251,11 @@ export default function ContentPage() {
           })}
         </div>
       )}
-      <Fab onClick={() => setIsDialogOpen(true)} color="cyan" />
+      <Fab onClick={() => setIsDialogOpen(true)} color="primary" />
       <AddContentDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onSave={handleAddContent}
-        color="cyan"
       />
       <AddReviewDialog
         isOpen={reviewDialogOpen}
@@ -280,7 +279,6 @@ export default function ContentPage() {
           setPendingDeleteContent(editContent);
           setConfirmDeleteOpen(true);
         }}
-        color="cyan"
       />
       <ViewContentDialog
         isOpen={isViewDialogOpen}
