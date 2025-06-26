@@ -91,7 +91,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
           </div>
         )}
         
-        <p className="text-sm text-gray-500 dark:text-gray-400 capitalize mb-2">{type}</p>
         <p className="text-gray-700 dark:text-gray-300 mb-4">{description}</p>
         
         {/* Personal notes for Ratings page */}

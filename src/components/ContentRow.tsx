@@ -55,7 +55,6 @@ const ContentRow: React.FC<ContentRowProps> = ({
       <div className="flex-1 min-w-0">
         <div className="font-semibold text-lg truncate">{title}</div>
         <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-md">{description}</div>
-        <div className="text-xs text-gray-400 dark:text-gray-500 mt-1 capitalize">{type}</div>
         {(reviewedDate || lastReviewed) && (
           <div className="text-xs text-gray-400 dark:text-gray-500">{reviewedDate || lastReviewed}</div>
         )}
