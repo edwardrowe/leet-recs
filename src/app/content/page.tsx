@@ -223,7 +223,7 @@ export default function ContentPage() {
           })}
         </div>
       ) : (
-        <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
+        <div className="w-full max-w-6xl rounded-lg">
           {filteredSortedContent.map((item) => {
             // Find reviews for this content
             const reviews = getReviewsWithContentByContentId(item.id);
@@ -255,6 +255,7 @@ export default function ContentPage() {
                   setViewContent(item);
                   setIsViewDialogOpen(true);
                 }}
+                className="py-3 px-0"
               />
             );
           })}
