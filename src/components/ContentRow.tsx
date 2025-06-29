@@ -60,7 +60,7 @@ const ContentRow: React.FC<ContentRowProps> = ({
             <div className="flex items-center gap-1 mt-4">
               <span className="text-xs text-gray-400 mr-1">Reviewed by:</span>
               {friendAvatars.map(f => (
-                <div key={f.id} className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-primary" title={f.name}>
+                <div key={f.id} className="relative w-7 h-7 rounded-full overflow-hidden" title={f.name}>
                   <Image src={f.avatarUrl} alt={f.name} fill className="object-cover" sizes="28px" />
                 </div>
               ))}
