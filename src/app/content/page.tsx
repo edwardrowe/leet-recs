@@ -22,7 +22,7 @@ import ContentRow from "@/components/ContentRow";
 
 export default function ContentPage() {
   const [contentList, setContentList] = useState<Content[]>(getContentList());
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState<Content | 'new' | null>(null);
   const [enabledTypes, setEnabledTypes] = useState<ContentType[]>(['all']);
   const [sortBy, setSortBy] = useState<'title' | 'avgRating' | 'lastReviewed'>('avgRating');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -32,30 +32,15 @@ export default function ContentPage() {
   const [reviewedFilter, setReviewedFilter] = useState<'all' | 'reviewed' | 'not-reviewed'>('all');
   const reviewedIds = new Set(getReviews().filter(r => r.userId === CURRENT_USER_ID).map(r => r.id));
   const [_, setForceUpdate] = useState(0);
-  const [editContent, setEditContent] = useState<Content | null>(null);
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const [pendingDeleteContent, setPendingDeleteContent] = useState<Content | null>(null);
   const [viewContent, setViewContent] = useState<Content | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [editReview, setEditReview] = useState<ReviewWithContent | null>(null);
   const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [pendingDeleteContent, setPendingDeleteContent] = useState<Content | null>(null);
 
   // Determine if any dialog is open
-  const anyDialogOpen = isDialogOpen || reviewDialogOpen || !!editContent || isViewDialogOpen || !!pendingDeleteContent;
-
-  const handleAddContent = (data: NewContentData) => {
-    // For now, default to 'movie' type and generate a new id
-    const newId = (Math.max(0, ...getContentList().map(c => parseInt(c.id, 10))) + 1).toString();
-    const newContent = {
-      id: newId,
-      title: data.title,
-      description: data.description,
-      thumbnailUrl: data.thumbnailUrl,
-      type: data.type,
-    };
-    addContent(newContent);
-    setContentList(getContentList()); // Trigger re-render
-  };
+  const anyDialogOpen = dialogContent !== null || reviewDialogOpen || !!viewContent || isViewDialogOpen || !!pendingDeleteContent;
 
   // Sorting options for the picker
   const sortOptions: SortOption[] = [
@@ -121,7 +106,7 @@ export default function ContentPage() {
     if (pendingDeleteContent) {
       deleteContent(pendingDeleteContent.id);
       setContentList(getContentList());
-      setEditContent(null);
+      setDialogContent(null);
     }
     setPendingDeleteContent(null);
     setConfirmDeleteOpen(false);
@@ -265,13 +250,37 @@ export default function ContentPage() {
       {!anyDialogOpen && (
         <div style={{ position: 'fixed', bottom: 32, right: 32, display: 'flex', flexDirection: 'column', gap: 16, zIndex: 100 }}>
           <ImportCSVButton onImport={() => setContentList(getContentList())} />
-          <Fab onClick={() => setIsDialogOpen(true)} />
+          <Fab onClick={() => setDialogContent('new')} />
         </div>
       )}
       <AddContentDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        onSave={handleAddContent}
+        isOpen={dialogContent !== null}
+        onClose={() => setDialogContent(null)}
+        onSave={data => {
+          if (dialogContent === 'new') {
+            // Add new content
+            const newId = (Math.max(0, ...getContentList().map(c => parseInt(c.id, 10))) + 1).toString();
+            const newContent = {
+              id: newId,
+              title: data.title,
+              description: data.description,
+              thumbnailUrl: data.thumbnailUrl,
+              type: data.type,
+            };
+            addContent(newContent);
+            setContentList(getContentList());
+          } else if (dialogContent) {
+            // Edit existing content
+            updateContent({ ...dialogContent, ...data });
+            setContentList(getContentList());
+          }
+          setDialogContent(null);
+        }}
+        contentToEdit={dialogContent !== 'new' && dialogContent ? dialogContent : undefined}
+        onDelete={dialogContent && dialogContent !== 'new' ? () => {
+          setPendingDeleteContent(dialogContent);
+          setDialogContent(null);
+        } : undefined}
       />
       <AddReviewDialog
         isOpen={reviewDialogOpen}
@@ -280,22 +289,6 @@ export default function ContentPage() {
         contentDatabase={reviewContent ? [reviewContent] : []}
         reviewToEdit={editReview}
       />
-      <AddContentDialog
-        isOpen={!!editContent}
-        onClose={() => setEditContent(null)}
-        onSave={data => {
-          if (!editContent) return;
-          updateContent({ ...editContent, ...data });
-          setEditContent(null);
-          setContentList(getContentList());
-        }}
-        contentToEdit={editContent}
-        onDelete={() => {
-          if (!editContent) return;
-          setPendingDeleteContent(editContent);
-          setConfirmDeleteOpen(true);
-        }}
-      />
       <ViewContentDialog
         isOpen={isViewDialogOpen}
         onClose={() => setIsViewDialogOpen(false)}
@@ -303,7 +296,7 @@ export default function ContentPage() {
         reviews={viewContent ? getReviewsWithContentByContentId(viewContent.id) : []}
         onEdit={() => {
           if (!viewContent) return;
-          setEditContent(viewContent);
+          setDialogContent(viewContent);
           setIsViewDialogOpen(false);
         }}
         onAddToRatings={() => {
@@ -314,13 +307,16 @@ export default function ContentPage() {
         }}
         canAddToRatings={viewContent ? !reviewedIds.has(viewContent.id) : false}
       />
-      <ConfirmationDialog
-        isOpen={!!pendingDeleteContent}
-        onClose={() => setPendingDeleteContent(null)}
-        onConfirm={handleConfirmDelete}
-        title="Delete Item"
-        message={`Are you sure you want to delete "${pendingDeleteContent?.title}"? This action cannot be undone.`}
-      />
+      {/* Confirmation Dialog */}
+      {pendingDeleteContent && (
+        <ConfirmationDialog
+          isOpen={true}
+          onClose={() => setPendingDeleteContent(null)}
+          onConfirm={handleConfirmDelete}
+          title="Delete Item"
+          message={`Are you sure you want to delete "${pendingDeleteContent.title}"? This action cannot be undone.`}
+        />
+      )}
     </main>
   );
 } 
