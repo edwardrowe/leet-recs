@@ -31,8 +31,8 @@ const ContentFilterBar: React.FC<ContentFilterBarProps> = ({
 }) => {
   const accent = 'cyan';
   const selectedClass = (active: boolean) => active
-    ? 'bg-cyan-600 text-white border-cyan-600 shadow-sm'
-    : 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-100';
+    ? 'bg-[var(--primary)] text-white border-[var(--primary)] shadow-sm'
+    : 'bg-[var(--surface)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--surface-alt)]';
   return (
     <div className={`w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-2 mb-4 ${className}`}>
       <div className="flex gap-1 flex-wrap justify-center">

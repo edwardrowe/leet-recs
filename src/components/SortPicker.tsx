@@ -17,7 +17,7 @@ const SortPicker: React.FC<SortPickerProps> = ({ options, value, onChange, class
     <select
       value={value}
       onChange={e => onChange(e.target.value)}
-      className={`px-2 py-1 rounded border border-gray-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-cyan-200 appearance-none shadow-sm ${className || ''}`}
+      className={`px-2 py-1 rounded border border-[var(--border)] text-xs bg-[var(--surface)] text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)] appearance-none shadow-sm ${className || ''}`}
       style={{ minWidth: 90 }}
     >
       {options.map(opt => (

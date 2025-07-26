@@ -132,16 +132,16 @@ export default function ContentPage() {
             onReviewedFilterChange={setReviewedFilter}
           />
         </div>
-        <div className="flex items-center gap-1 border-l border-gray-200 pl-3">
+        <div className="flex items-center gap-1 border-l border-[var(--border)] pl-3">
           <input
             type="text"
             placeholder="Search..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="px-2 py-1 rounded border border-gray-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-cyan-200"
+            className="px-2 py-1 rounded border border-[var(--border)] text-xs bg-[var(--surface)] text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-light)]"
             style={{ minWidth: 120 }}
           />
-          <label htmlFor="sort" className="text-xs font-medium">Sort by:</label>
+          <label htmlFor="sort" className="text-xs font-medium text-[var(--text)]">Sort by:</label>
           <SortPicker
             options={sortOptions}
             value={sortBy}
@@ -149,7 +149,7 @@ export default function ContentPage() {
           />
           <button
             onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-            className="p-1.5 rounded-full border border-gray-300 bg-white hover:bg-gray-100 transition-colors flex items-center justify-center"
+            className="p-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:bg-[var(--surface-alt)] transition-colors flex items-center justify-center"
             aria-label="Toggle sort direction"
             title={`Sort ${sortDirection === 'asc' ? 'Ascending' : 'Descending'}`}
           >
@@ -161,14 +161,14 @@ export default function ContentPage() {
           </button>
           {/* View toggle */}
           <button
-            className={`ml-2 px-2 py-1 rounded text-xs font-medium border ${view === 'grid' ? 'bg-cyan-600 text-white border-cyan-600' : 'bg-white text-cyan-700 border-gray-300 hover:bg-gray-100'}`}
+            className={`ml-2 px-2 py-1 rounded text-xs font-medium border ${view === 'grid' ? 'bg-[var(--primary)] text-white border-[var(--primary)]' : 'bg-[var(--surface)] text-[var(--primary)] border-[var(--border)] hover:bg-[var(--surface-alt)]'}`}
             onClick={() => setView('grid')}
             aria-label="Grid view"
           >
             Grid
           </button>
           <button
-            className={`px-2 py-1 rounded text-xs font-medium border ${view === 'list' ? 'bg-cyan-600 text-white border-cyan-600' : 'bg-white text-cyan-700 border-gray-300 hover:bg-gray-100'}`}
+            className={`px-2 py-1 rounded text-xs font-medium border ${view === 'list' ? 'bg-[var(--primary)] text-white border-[var(--primary)]' : 'bg-[var(--surface)] text-[var(--primary)] border-[var(--border)] hover:bg-[var(--surface-alt)]'}`}
             onClick={() => setView('list')}
             aria-label="List view"
           >
