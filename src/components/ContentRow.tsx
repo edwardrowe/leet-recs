@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { ContentType } from '@/lib/contentStore';
 import ContentTypeIcon from './ContentTypeIcon';
+import { useState } from 'react';
 
 interface ContentRowProps {
   title: string;
@@ -28,6 +29,7 @@ const ContentRow: React.FC<ContentRowProps> = ({
   className = '',
   yourRating
 }) => {
+  const [imgError, setImgError] = useState(false);
   return (
     <div
       className={`flex items-center bg-[#1e2a3b] hover:bg-[#263143] transition-colors rounded-2xl px-3 py-2 w-full cursor-pointer ${className}`}
@@ -37,7 +39,14 @@ const ContentRow: React.FC<ContentRowProps> = ({
       {/* Thumbnail */}
       {thumbnailUrl && (
         <div className="relative w-24 h-16 rounded-lg overflow-hidden flex-shrink-0 mr-6 bg-gray-800">
-          <Image src={thumbnailUrl} alt={title} fill className="object-cover" />
+          <Image
+            src={imgError ? '/fallback.svg' : thumbnailUrl}
+            alt={title}
+            fill
+            className="object-cover"
+            sizes="96px"
+            onError={() => setImgError(true)}
+          />
         </div>
       )}
       {/* Main content */}

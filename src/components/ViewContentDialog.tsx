@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Content } from "@/lib/contentStore";
 import { ReviewWithContent } from "@/lib/reviewStore";
@@ -29,6 +29,10 @@ function formatReviewDateShort(timestamp: number): string {
 }
 
 const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, content, reviews, onEdit, onEditReview, onAddToRatings, canAddToRatings }) => {
+  const [imgError, setImgError] = useState(false);
+  useEffect(() => {
+    setImgError(false);
+  }, [content?.thumbnailUrl, isOpen]);
   // Add Escape key handler
   useEffect(() => {
     if (!isOpen) return;
@@ -72,7 +76,14 @@ const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, 
           <div className="flex flex-col md:flex-row gap-6">
             {content.thumbnailUrl && (
               <div className="relative w-full md:w-48 h-48 rounded-lg overflow-hidden flex-shrink-0">
-                <Image src={content.thumbnailUrl} alt={content.title} fill className="object-cover" />
+                <Image
+                  src={imgError ? '/fallback.svg' : content.thumbnailUrl}
+                  alt={content.title}
+                  fill
+                  className="object-cover"
+                  sizes="192px"
+                  onError={() => setImgError(true)}
+                />
               </div>
             )}
             <div className="flex-1">
