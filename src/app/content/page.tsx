@@ -29,7 +29,7 @@ export default function ContentPage() {
   const [search, setSearch] = useState('');
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewContent, setReviewContent] = useState<Content | null>(null);
-  const [reviewedFilter, setReviewedFilter] = useState<'all' | 'reviewed' | 'not-reviewed'>('all');
+  const [reviewedFilter, setReviewedFilter] = useState<'all' | 'reviewed'>('all');
   const reviewedIds = new Set(getReviews().filter(r => r.userId === CURRENT_USER_ID).map(r => r.id));
   const [_, setForceUpdate] = useState(0);
   const [viewContent, setViewContent] = useState<Content | null>(null);
@@ -53,7 +53,6 @@ export default function ContentPage() {
   const filteredSortedContent = contentList
     .filter(item => {
       if (reviewedFilter === 'reviewed' && !reviewedIds.has(item.id)) return false;
-      if (reviewedFilter === 'not-reviewed' && reviewedIds.has(item.id)) return false;
       return (
         (enabledTypes.includes('all') || enabledTypes.includes(item.type)) &&
         (item.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -84,8 +83,6 @@ export default function ContentPage() {
       }
       return 0;
     });
-
-  const handleReviewedFilterChange = (val: 'all' | 'reviewed' | 'not-reviewed') => setReviewedFilter(val);
 
   const handleSaveReview = (data: NewReviewData) => {
     if (!reviewContent) return;
@@ -124,7 +121,16 @@ export default function ContentPage() {
       <h1 className="text-4xl font-bold mb-8">Discover</h1>
       <div className="w-full max-w-6xl flex flex-row justify-between items-center gap-4 mb-8 px-0 md:px-0">
         <div className="flex flex-row items-center gap-2">
-          <ContentFilterBar enabledTypes={enabledTypes} setEnabledTypes={setEnabledTypes} search={search} setSearch={setSearch} sortDirection={sortDirection} setSortDirection={setSortDirection} />
+          <ContentFilterBar
+            enabledTypes={enabledTypes}
+            setEnabledTypes={setEnabledTypes}
+            search={search}
+            setSearch={setSearch}
+            sortDirection={sortDirection}
+            setSortDirection={setSortDirection}
+            reviewedFilter={reviewedFilter}
+            onReviewedFilterChange={setReviewedFilter}
+          />
         </div>
         <div className="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-4">
           <input
@@ -177,6 +183,8 @@ export default function ContentPage() {
             const reviews = getReviewsWithContentByContentId(item.id);
             // Calculate average rating
             const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : null;
+            // Get current user's review
+            const userReview = reviews.find(r => r.userId === CURRENT_USER_ID);
             // Get followed friends
             const people = getPeople();
             const followedFriends = people.filter(p => p.followed && p.id !== 'me');
@@ -197,6 +205,7 @@ export default function ContentPage() {
                 type={item.type}
                 thumbnailUrl={item.thumbnailUrl}
                 averageRating={avgRating ? parseFloat(avgRating) : undefined}
+                yourRating={userReview ? userReview.rating : undefined}
                 lastReviewed={item.lastReviewed ? formatLastReviewedDate(item.lastReviewed) : undefined}
                 friendAvatars={friendAvatars}
                 onClick={() => {
@@ -214,6 +223,8 @@ export default function ContentPage() {
             const reviews = getReviewsWithContentByContentId(item.id);
             // Calculate average rating
             const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : null;
+            // Get current user's review
+            const userReview = reviews.find(r => r.userId === CURRENT_USER_ID);
             // Get followed friends
             const people = getPeople();
             const followedFriends = people.filter(p => p.followed && p.id !== 'me');
@@ -234,6 +245,7 @@ export default function ContentPage() {
                 type={item.type}
                 thumbnailUrl={item.thumbnailUrl}
                 averageRating={avgRating ? parseFloat(avgRating) : undefined}
+                yourRating={userReview ? userReview.rating : undefined}
                 lastReviewed={item.lastReviewed ? formatLastReviewedDate(item.lastReviewed) : undefined}
                 friendAvatars={friendAvatars}
                 onClick={() => {

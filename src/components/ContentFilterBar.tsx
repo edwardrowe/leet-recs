@@ -13,6 +13,8 @@ interface ContentFilterBarProps {
   setSortDirection: (d: 'asc' | 'desc') => void;
   className?: string;
   color?: 'cyan';
+  reviewedFilter: 'all' | 'reviewed';
+  onReviewedFilterChange: (val: 'all' | 'reviewed') => void;
 }
 
 const ContentFilterBar: React.FC<ContentFilterBarProps> = ({
@@ -24,6 +26,8 @@ const ContentFilterBar: React.FC<ContentFilterBarProps> = ({
   setSortDirection,
   className = '',
   color = 'cyan',
+  reviewedFilter,
+  onReviewedFilterChange,
 }) => {
   const accent = 'cyan';
   const selectedClass = (active: boolean) => active ? `bg-${accent}-600 hover:bg-${accent}-700 text-white` : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600';
@@ -42,6 +46,12 @@ const ContentFilterBar: React.FC<ContentFilterBarProps> = ({
         </button>
         <button onClick={() => setEnabledTypes(['video-game'])} className={`px-4 py-2 rounded-full text-sm font-medium flex items-center justify-center ${selectedClass(enabledTypes[0] === 'video-game')}`} aria-label="Games">
           <ContentTypeIcon type="video-game" className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => onReviewedFilterChange(reviewedFilter === 'reviewed' ? 'all' : 'reviewed')}
+          className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'reviewed' ? `bg-${accent}-600 text-white` : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'}`}
+        >
+          My Reviews
         </button>
       </div>
     </div>

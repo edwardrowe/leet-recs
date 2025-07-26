@@ -8,14 +8,12 @@ interface ContentCardProps {
   description: string;
   type: ContentType;
   thumbnailUrl?: string;
-  rating?: number; // For Ratings page (single user rating)
   averageRating?: number; // For Discover page (average of all ratings)
-  personalNotes?: string; // For Ratings page
-  reviewedDate?: string; // For Ratings page
   lastReviewed?: string; // For Discover page
-  friendAvatars?: Array<{ id: string; name: string; avatarUrl: string }>; // For Discover page
+  friendAvatars?: Array<{ id: string; name: string; avatarUrl: string }>;
   onClick?: () => void;
   className?: string;
+  yourRating?: number;
 }
 
 // Sanitize thumbnailUrl for next/image
@@ -38,18 +36,14 @@ const ContentCard: React.FC<ContentCardProps> = ({
   description,
   type,
   thumbnailUrl,
-  rating,
   averageRating,
-  personalNotes,
-  reviewedDate,
   lastReviewed,
   friendAvatars = [],
   onClick,
-  className = ''
+  className = '',
+  yourRating
 }) => {
-  const displayRating = rating !== undefined ? rating : averageRating;
-  const showRating = displayRating !== undefined && displayRating !== null;
-
+  const showRating = averageRating !== undefined && averageRating !== null;
   return (
     <div
       className={`border rounded-lg shadow-md bg-white dark:bg-gray-800 flex flex-col h-full overflow-hidden relative cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${className}`}
@@ -59,11 +53,15 @@ const ContentCard: React.FC<ContentCardProps> = ({
       {showRating && (
         <div className="absolute top-4 left-4 z-10 flex flex-col items-start gap-1">
           <span className="text-4xl font-extrabold text-primary bg-white dark:bg-gray-900 rounded-full px-4 py-1 shadow border-2 border-primary-light dark:border-primary-dark">
-            {displayRating}
+            {averageRating}
           </span>
+          {yourRating !== undefined && (
+            <span className="text-xs font-semibold text-primary bg-white dark:bg-gray-900 rounded px-2 py-1 border border-primary-light dark:border-primary-dark mt-1">
+              Your Rating: {yourRating}
+            </span>
+          )}
         </div>
       )}
-      
       {thumbnailUrl && getSafeImageUrl(thumbnailUrl) && (
         <div className="relative h-48 w-full">
           <Image
@@ -75,7 +73,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
           />
         </div>
       )}
-      
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex items-center gap-2 mb-1">
           <span className="min-w-[20px] min-h-[20px] flex items-center justify-center">
@@ -83,24 +80,13 @@ const ContentCard: React.FC<ContentCardProps> = ({
           </span>
           <h2 className="text-2xl font-bold truncate flex-1">{title}</h2>
         </div>
-        
         {/* Date display */}
-        {(reviewedDate || lastReviewed) && (
+        {lastReviewed && (
           <div className="text-xs text-gray-400 dark:text-gray-500 mb-1">
-            {reviewedDate || lastReviewed}
+            {lastReviewed}
           </div>
         )}
-        
         <p className="text-gray-700 dark:text-gray-300 mb-4">{description}</p>
-        
-        {/* Personal notes for Ratings page */}
-        {personalNotes && (
-          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
-            <h3 className="font-semibold text-md mb-1 text-gray-800 dark:text-gray-200">My Notes:</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 italic">{personalNotes}</p>
-          </div>
-        )}
-        
         {/* Friend avatars for Discover page */}
         {friendAvatars.length > 0 && (
           <div className="flex items-center gap-2 mb-2">

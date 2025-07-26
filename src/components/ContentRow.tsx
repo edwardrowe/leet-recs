@@ -13,6 +13,7 @@ interface ContentRowProps {
   friendAvatars?: Array<{ id: string; name: string; avatarUrl: string }>;
   onClick?: () => void;
   className?: string;
+  yourRating?: number;
 }
 
 const ContentRow: React.FC<ContentRowProps> = ({
@@ -24,7 +25,8 @@ const ContentRow: React.FC<ContentRowProps> = ({
   lastReviewed,
   friendAvatars = [],
   onClick,
-  className = ''
+  className = '',
+  yourRating
 }) => {
   return (
     <div
@@ -55,6 +57,11 @@ const ContentRow: React.FC<ContentRowProps> = ({
           <span className="bg-green-600 text-white font-bold px-4 py-1 rounded-full text-base shadow text-center min-w-[3rem]">
             {averageRating}
           </span>
+          {yourRating !== undefined && (
+            <span className="mt-1 text-xs font-semibold text-primary bg-white dark:bg-gray-900 rounded px-2 py-1 border border-primary-light dark:border-primary-dark">
+              Your Rating: {yourRating}
+            </span>
+          )}
           {/* Reviewer avatars */}
           {friendAvatars.length > 0 && (
             <div className="flex items-center gap-1 mt-4">
