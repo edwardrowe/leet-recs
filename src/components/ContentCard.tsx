@@ -51,12 +51,12 @@ const ContentCard: React.FC<ContentCardProps> = ({
     >
       {/* Rating display */}
       {showRating && (
-        <div className="absolute top-4 left-4 z-10 flex flex-col items-start gap-1">
+        <div className="absolute top-4 left-4 z-10 flex flex-row items-center gap-2">
           <span className="text-4xl font-extrabold text-primary bg-white dark:bg-gray-900 rounded-full px-4 py-1 shadow border-2 border-primary-light dark:border-primary-dark">
             {averageRating}
           </span>
           {yourRating !== undefined && (
-            <span className="text-xs font-semibold text-primary bg-white dark:bg-gray-900 rounded px-2 py-1 border border-primary-light dark:border-primary-dark mt-1">
+            <span className="text-xs font-semibold text-primary bg-white dark:bg-gray-900 rounded px-2 py-1 border border-primary-light dark:border-primary-dark">
               Your Rating: {yourRating}
             </span>
           )}

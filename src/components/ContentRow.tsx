@@ -54,17 +54,19 @@ const ContentRow: React.FC<ContentRowProps> = ({
       {/* Rating badge */}
       {averageRating !== undefined && (
         <div className="ml-6 flex flex-col items-end justify-between h-full">
-          <span className="bg-green-600 text-white font-bold px-4 py-1 rounded-full text-base shadow text-center min-w-[3rem]">
-            {averageRating}
-          </span>
-          {yourRating !== undefined && (
-            <span className="mt-1 text-xs font-semibold text-primary bg-white dark:bg-gray-900 rounded px-2 py-1 border border-primary-light dark:border-primary-dark">
-              Your Rating: {yourRating}
+          <div className="flex flex-row items-center gap-2">
+            {yourRating !== undefined && (
+              <span className="text-xs font-semibold text-primary bg-white dark:bg-gray-900 rounded px-2 py-1 border border-primary-light dark:border-primary-dark">
+                Your Rating: {yourRating}
+              </span>
+            )}
+            <span className="bg-green-600 text-white font-bold px-4 py-1 rounded-full text-base shadow text-center min-w-[3rem]">
+              {averageRating}
             </span>
-          )}
+          </div>
           {/* Reviewer avatars */}
           {friendAvatars.length > 0 && (
-            <div className="flex items-center gap-1 mt-4">
+            <div className="flex items-center gap-1 mt-2">
               <span className="text-xs text-gray-400 mr-1">Reviewed by:</span>
               {friendAvatars.map(f => (
                 <div key={f.id} className="relative w-7 h-7 rounded-full overflow-hidden" title={f.name}>
