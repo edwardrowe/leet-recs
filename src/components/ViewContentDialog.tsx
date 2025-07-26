@@ -11,7 +11,8 @@ interface ViewContentDialogProps {
   onClose: () => void;
   content: Content | null;
   reviews: ReviewWithContent[];
-  onEdit: () => void;
+  onEdit: () => void; // Edit content
+  onEditReview?: () => void; // Edit user's review
   onAddToRatings: () => void;
   canAddToRatings: boolean;
 }
@@ -27,7 +28,7 @@ function formatReviewDateShort(timestamp: number): string {
   return `on ${date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
 }
 
-const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, content, reviews, onEdit, onAddToRatings, canAddToRatings }) => {
+const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, content, reviews, onEdit, onEditReview, onAddToRatings, canAddToRatings }) => {
   // Add Escape key handler
   useEffect(() => {
     if (!isOpen) return;
@@ -112,7 +113,7 @@ const ViewContentDialog: React.FC<ViewContentDialogProps> = ({ isOpen, onClose, 
                         <span className="text-xs text-gray-400 ml-2">{formatReviewDateShort(review.timestamp)}</span>
                         {review.userId === CURRENT_USER_ID && (
                           <button
-                            onClick={onEdit}
+                            onClick={onEditReview}
                             className="ml-auto w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 shadow transition-colors"
                             aria-label="Edit My Review"
                             type="button"
