@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation';
 const NavBar = () => {
   const pathname = usePathname();
   return (
-    <nav className="w-full max-w-6xl mx-auto mb-8 flex gap-4 items-center py-4">
-      <Link href="/content" className={`px-4 py-2 rounded font-medium ${pathname === '/content' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'}`}>Discover</Link>
-      <Link href="/friends" className={`px-4 py-2 rounded font-medium ${pathname === '/friends' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'}`}>Friends</Link>
+    <nav className="w-full max-w-6xl mx-auto mb-4 flex gap-2 items-center py-2 px-4 bg-white shadow-sm rounded-lg border border-gray-200">
+      <Link href="/content" className={`px-3 py-1.5 rounded font-medium text-sm transition-colors ${pathname === '/content' ? 'bg-cyan-600 text-white shadow' : 'text-gray-800 hover:bg-gray-100'}`}>Discover</Link>
+      <Link href="/friends" className={`px-3 py-1.5 rounded font-medium text-sm transition-colors ${pathname === '/friends' ? 'bg-cyan-600 text-white shadow' : 'text-gray-800 hover:bg-gray-100'}`}>Friends</Link>
     </nav>
   );
 };

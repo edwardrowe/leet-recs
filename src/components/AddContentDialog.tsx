@@ -88,29 +88,29 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center" style={{ background: 'var(--dialog-scrim-bg)' }}>
-      <div className="bg-white dark:bg-gray-800 p-0 rounded-2xl shadow-2xl w-full max-w-md relative">
-        <div className={`h-2 rounded-t-2xl bg-${accent}-600 w-full`} />
-        <CloseButton onClick={onClose} className="absolute top-4 right-4" />
-        <div className="p-8">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{contentToEdit ? 'Edit Item' : 'Add New Item'}</h2>
-          <div className="space-y-6">
+    <div className="fixed inset-0 z-50 flex justify-center items-center" style={{ background: 'rgba(30, 41, 59, 0.10)' }}>
+      <div className="dialog bg-white p-0 rounded-xl shadow-lg w-full max-w-md relative border border-gray-200">
+        <div className="h-1 rounded-t-xl bg-cyan-600 w-full" />
+        <CloseButton onClick={onClose} className="absolute top-3 right-3" />
+        <div className="p-5">
+          <h2 className="text-xl font-bold mb-4 text-gray-900">{contentToEdit ? 'Edit Item' : 'Add New Item'}</h2>
+          <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                className={`mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm sm:text-sm px-3 py-2 focus:ring-2 focus:ring-${accent}-500 focus:border-${accent}-500`}
+                className="mt-1 block w-full rounded border border-gray-300 bg-white shadow-sm text-xs px-2 py-1 focus:ring-2 focus:ring-cyan-200 focus:border-cyan-500"
               />
             </div>
             <div>
-              <label htmlFor="type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
+              <label htmlFor="type" className="block text-xs font-medium text-gray-700 mb-1">Type</label>
               <select
                 id="type"
                 value={type}
                 onChange={e => setType(e.target.value as 'movie' | 'tv-show' | 'book' | 'video-game')}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm rounded-lg bg-white dark:bg-gray-700 px-3"
+                className="mt-1 block w-full pl-2 pr-8 py-1 text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-200 focus:border-cyan-500 rounded bg-white"
               >
                 <option value="movie">Movie</option>
                 <option value="tv-show">TV Show</option>
@@ -119,23 +119,23 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
               <textarea
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 rows={3}
-                className={`mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm sm:text-sm px-3 py-2 focus:ring-2 focus:ring-${accent}-500 focus:border-${accent}-500`}
+                className="mt-1 block w-full rounded border border-gray-300 bg-white shadow-sm text-xs px-2 py-1 focus:ring-2 focus:ring-cyan-200 focus:border-cyan-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Thumbnail</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Thumbnail</label>
               <div className="flex gap-2 items-center">
                 <input
                   type="text"
                   placeholder="Paste image URL"
                   value={thumbnailUrl}
                   onChange={e => { setThumbnailUrl(e.target.value); setUploadPreview(null); }}
-                  className={`mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm sm:text-sm px-3 py-2 focus:ring-2 focus:ring-${accent}-500 focus:border-${accent}-500`}
+                  className="mt-1 block w-full rounded border border-gray-300 bg-white shadow-sm text-xs px-2 py-1 focus:ring-2 focus:ring-cyan-200 focus:border-cyan-500"
                 />
                 <input
                   type="file"
@@ -147,7 +147,7 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className={`px-3 py-2 rounded-lg bg-${accent}-500 text-white font-medium hover:bg-${accent}-600 shadow`}
+                  className="px-2 py-1 rounded bg-cyan-500 text-white font-medium hover:bg-cyan-600 shadow-sm text-xs"
                 >
                   Upload
                 </button>
@@ -158,13 +158,13 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
                     setThumbnailUrl(`https://picsum.photos/seed/${randomSeed}/400/300`);
                     setUploadPreview(null);
                   }}
-                  className={`px-3 py-2 rounded-lg bg-${accent}-600 text-white font-medium hover:bg-${accent}-700 shadow`}
+                  className="px-2 py-1 rounded bg-cyan-600 text-white font-medium hover:bg-cyan-700 shadow-sm text-xs"
                 >
-                  Random Image
+                  Random
                 </button>
               </div>
               {(uploadPreview || thumbnailUrl) && (
-                <div className="relative h-32 w-full mt-2 rounded-lg overflow-hidden border">
+                <div className="relative h-24 w-full mt-2 rounded-lg overflow-hidden border">
                   <Image
                     src={uploadPreview || thumbnailUrl}
                     alt="Thumbnail preview"
@@ -175,16 +175,16 @@ const AddContentDialog: React.FC<AddContentDialogProps> = ({ isOpen, onClose, on
               )}
             </div>
           </div>
-          <div className="mt-8 flex justify-end gap-4">
+          <div className="mt-6 flex justify-end gap-3">
             {contentToEdit && onDelete && (
               <button
                 onClick={onDelete}
-                className="px-5 py-2 text-sm font-medium rounded-lg text-white bg-secondary hover:bg-secondary-hover shadow"
+                className="px-4 py-1.5 text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700 shadow-sm"
               >
                 Delete
               </button>
             )}
-            <button onClick={handleSave} className={`px-5 py-2 text-sm font-medium rounded-lg text-white bg-${accent}-600 hover:bg-${accent}-700 shadow`}>
+            <button onClick={handleSave} className="px-4 py-1.5 text-xs font-medium rounded text-white bg-cyan-600 hover:bg-cyan-700 shadow-sm">
               Save
             </button>
           </div>

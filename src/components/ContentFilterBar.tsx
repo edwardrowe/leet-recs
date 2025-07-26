@@ -30,26 +30,28 @@ const ContentFilterBar: React.FC<ContentFilterBarProps> = ({
   onReviewedFilterChange,
 }) => {
   const accent = 'cyan';
-  const selectedClass = (active: boolean) => active ? `bg-${accent}-600 hover:bg-${accent}-700 text-white` : 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600';
+  const selectedClass = (active: boolean) => active
+    ? 'bg-cyan-600 text-white border-cyan-600 shadow-sm'
+    : 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-100';
   return (
-    <div className={`w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 ${className}`}>
-      <div className="flex gap-2 flex-wrap justify-center">
-        <button onClick={() => setEnabledTypes(['all'])} className={`px-4 py-2 rounded-full text-sm font-medium ${selectedClass(enabledTypes[0] === 'all')}`}>All Content</button>
-        <button onClick={() => setEnabledTypes(['movie'])} className={`px-4 py-2 rounded-full text-sm font-medium flex items-center justify-center ${selectedClass(enabledTypes[0] === 'movie')}`} aria-label="Movies">
-          <ContentTypeIcon type="movie" className="w-5 h-5" />
+    <div className={`w-full max-w-4xl flex flex-col sm:flex-row justify-between items-center gap-2 mb-4 ${className}`}>
+      <div className="flex gap-1 flex-wrap justify-center">
+        <button onClick={() => setEnabledTypes(['all'])} className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm border transition-colors ${selectedClass(enabledTypes[0] === 'all')}`}>All Content</button>
+        <button onClick={() => setEnabledTypes(['movie'])} className={`px-3 py-1 rounded-full text-xs font-medium flex items-center justify-center shadow-sm border transition-colors ${selectedClass(enabledTypes[0] === 'movie')}`} aria-label="Movies">
+          <ContentTypeIcon type="movie" className="w-4 h-4" />
         </button>
-        <button onClick={() => setEnabledTypes(['tv-show'])} className={`px-4 py-2 rounded-full text-sm font-medium flex items-center justify-center ${selectedClass(enabledTypes[0] === 'tv-show')}`} aria-label="TV Shows">
-          <ContentTypeIcon type="tv-show" className="w-5 h-5" />
+        <button onClick={() => setEnabledTypes(['tv-show'])} className={`px-3 py-1 rounded-full text-xs font-medium flex items-center justify-center shadow-sm border transition-colors ${selectedClass(enabledTypes[0] === 'tv-show')}`} aria-label="TV Shows">
+          <ContentTypeIcon type="tv-show" className="w-4 h-4" />
         </button>
-        <button onClick={() => setEnabledTypes(['book'])} className={`px-4 py-2 rounded-full text-sm font-medium flex items-center justify-center ${selectedClass(enabledTypes[0] === 'book')}`} aria-label="Books">
-          <ContentTypeIcon type="book" className="w-5 h-5" />
+        <button onClick={() => setEnabledTypes(['book'])} className={`px-3 py-1 rounded-full text-xs font-medium flex items-center justify-center shadow-sm border transition-colors ${selectedClass(enabledTypes[0] === 'book')}`} aria-label="Books">
+          <ContentTypeIcon type="book" className="w-4 h-4" />
         </button>
-        <button onClick={() => setEnabledTypes(['video-game'])} className={`px-4 py-2 rounded-full text-sm font-medium flex items-center justify-center ${selectedClass(enabledTypes[0] === 'video-game')}`} aria-label="Games">
-          <ContentTypeIcon type="video-game" className="w-5 h-5" />
+        <button onClick={() => setEnabledTypes(['video-game'])} className={`px-3 py-1 rounded-full text-xs font-medium flex items-center justify-center shadow-sm border transition-colors ${selectedClass(enabledTypes[0] === 'video-game')}`} aria-label="Games">
+          <ContentTypeIcon type="video-game" className="w-4 h-4" />
         </button>
         <button
           onClick={() => onReviewedFilterChange(reviewedFilter === 'reviewed' ? 'all' : 'reviewed')}
-          className={`px-4 py-2 rounded-full text-sm font-medium ${reviewedFilter === 'reviewed' ? `bg-${accent}-600 text-white` : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200'}`}
+          className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm border transition-colors ${reviewedFilter === 'reviewed' ? `bg-cyan-600 text-white` : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100'}`}
         >
           My Reviews
         </button>
