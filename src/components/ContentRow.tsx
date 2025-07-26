@@ -28,7 +28,7 @@ const ContentRow: React.FC<ContentRowProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center bg-[#232b39] hover:bg-[#263143] transition-colors rounded-2xl px-3 py-2 w-full cursor-pointer ${className}`}
+      className={`flex items-center bg-[#1e2a3b] hover:bg-[#263143] transition-colors rounded-2xl px-3 py-2 w-full cursor-pointer ${className}`}
       onClick={onClick}
       style={{ marginBottom: '0.25rem' }}
     >
